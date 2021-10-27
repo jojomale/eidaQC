@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>eidaqc.eida_inventory module &mdash; EidaQC 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="eidaqc.eida_logger module" href="eidaqc.eida_logger.html" />
+    <link rel="prev" title="eidaqc.eida_config module" href="eidaqc.eida_config.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> EidaQC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="eidaqc.html">eidaqc package</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="eidaqc.html#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.html#install-dependencies">Install dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.html#using-conda">Using conda</a></li>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.html#without-conda">Without conda</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eidaqc.html#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.html#command-line-options">Command line options</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eidaqc.html#method">Method</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eidaqc.html#args">args:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eidaqc.html#configfile">configfile:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="eidaqc.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.cmdline.html">eidaqc.cmdline module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.eida_availability.html">eidaqc.eida_availability module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.eida_config.html">eidaqc.eida_config module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">eidaqc.eida_inventory module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.eida_logger.html">eidaqc.eida_logger module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.eida_report.html">eidaqc.eida_report module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.statuscodes.html">eidaqc.statuscodes module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">EidaQC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="eidaqc.html">eidaqc package</a> &raquo;</li>
+      <li>eidaqc.eida_inventory module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/eidaqc.eida_inventory.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-eidaqc.eida_inventory">
+<span id="eidaqc-eida-inventory-module"></span><h1>eidaqc.eida_inventory module<a class="headerlink" href="#module-eidaqc.eida_inventory" title="Permalink to this headline"></a></h1>
+<p>Test ‘get_stations’ response, compare retrieved networks between routing
+client and separate requests to EIDA servers directly.</p>
+<dl>
+<dt>Syntax:</dt><dd><p>eida_inventory_test.py &lt;level&gt;</p>
+<p>&lt;level&gt;     request level, ‘network’, ‘station’ or ‘channel’</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="eidaqc.eida_inventory.EidaInventory">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">eidaqc.eida_inventory.</span></span><span class="sig-name descname"><span class="pre">EidaInventory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reqlevel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxlogage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">starttime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">UTCDateTime(2021,</span> <span class="pre">10,</span> <span class="pre">27,</span> <span class="pre">16,</span> <span class="pre">4,</span> <span class="pre">32,</span> <span class="pre">289576)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endtime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">UTCDateTime(2021,</span> <span class="pre">10,</span> <span class="pre">26,</span> <span class="pre">16,</span> <span class="pre">4,</span> <span class="pre">32,</span> <span class="pre">289586)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wanted_channels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('HHZ',</span> <span class="pre">'BHZ',</span> <span class="pre">'EHZ',</span> <span class="pre">'SHZ')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">240</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_networks_servers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datapath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/home/lehr/svn/EidaQualityCheck/trunk/eidaQC/docs'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_inventory.EidaInventory" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Manage inventory test.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_inventory.EidaInventory.check4missing_networks">
+<span class="sig-name descname"><span class="pre">check4missing_networks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_networks</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_inventory.EidaInventory.check4missing_networks" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_inventory.EidaInventory.print_results">
+<span class="sig-name descname"><span class="pre">print_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runtime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">99999.9</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_inventory.EidaInventory.print_results" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_inventory.EidaInventory.routing_request">
+<span class="sig-name descname"><span class="pre">routing_request</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_inventory.EidaInventory.routing_request" title="Permalink to this definition"></a></dt>
+<dd><p>Request inventories using
+<cite>obspy.clients.fdsn.RoutingClient( “eida-routing” )</cite></p>
+<p>RoutingClient retrieves all available inventories in
+EIDA virtual network without specifying a server. It
+finds its way to the server “on its own”.</p>
+<p>Returns and sets attribute <cite>rnets</cite> which is a set of all
+networks retrieved.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_inventory.EidaInventory.server_request">
+<span class="sig-name descname"><span class="pre">server_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">servers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_inventory.EidaInventory.server_request" title="Permalink to this definition"></a></dt>
+<dd><p>Request inventories from servers directly.</p>
+<p>Uses <cite>obspy.clients.fdsn.client.Client(server)</cite> on each
+server in EidaInventory.servers or <cite>servers</cite> if not <cite>None</cite>.</p>
+<p>Returns and sets attribute <cite>snets</cite> which is a set of all
+networks retrieved.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="eidaqc.eida_inventory.Logtext">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">eidaqc.eida_inventory.</span></span><span class="sig-name descname"><span class="pre">Logtext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datapath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_inventory.Logtext" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Manage output of results from inventory test</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_inventory.Logtext.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_inventory.Logtext.close" title="Permalink to this definition"></a></dt>
+<dd><p>Close result file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_inventory.Logtext.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_inventory.Logtext.write" title="Permalink to this definition"></a></dt>
+<dd><p>Write <cite>text</cite> to logger and result file.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="eidaqc.eida_inventory.run">
+<span class="sig-prename descclassname"><span class="pre">eidaqc.eida_inventory.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reqlevel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configfile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_inventory.run" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="eidaqc.eida_config.html" class="btn btn-neutral float-left" title="eidaqc.eida_config module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="eidaqc.eida_logger.html" class="btn btn-neutral float-right" title="eidaqc.eida_logger module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Johanna Lehr, Klaus Stammler.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

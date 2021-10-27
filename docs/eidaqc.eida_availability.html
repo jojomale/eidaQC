@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>eidaqc.eida_availability module &mdash; EidaQC 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="eidaqc.eida_config module" href="eidaqc.eida_config.html" />
+    <link rel="prev" title="eidaqc.cmdline module" href="eidaqc.cmdline.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> EidaQC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="eidaqc.html">eidaqc package</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="eidaqc.html#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.html#install-dependencies">Install dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.html#using-conda">Using conda</a></li>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.html#without-conda">Without conda</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eidaqc.html#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.html#command-line-options">Command line options</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eidaqc.html#method">Method</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eidaqc.html#args">args:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eidaqc.html#configfile">configfile:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="eidaqc.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.cmdline.html">eidaqc.cmdline module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">eidaqc.eida_availability module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.eida_config.html">eidaqc.eida_config module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.eida_inventory.html">eidaqc.eida_inventory module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.eida_logger.html">eidaqc.eida_logger module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.eida_report.html">eidaqc.eida_report module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.statuscodes.html">eidaqc.statuscodes module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">EidaQC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="eidaqc.html">eidaqc package</a> &raquo;</li>
+      <li>eidaqc.eida_availability module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/eidaqc.eida_availability.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-eidaqc.eida_availability">
+<span id="eidaqc-eida-availability-module"></span><h1>eidaqc.eida_availability module<a class="headerlink" href="#module-eidaqc.eida_availability" title="Permalink to this headline"></a></h1>
+<p>Availability test of EIDA stations using Python obspy library.</p>
+<ul class="simple">
+<li><p>Conducts random waveform requests to single channels of EIDA stations.</p></li>
+<li><p>One request per minute.</p></li>
+<li><p>Requested time span randomly selected from last year, span length between
+60 and 600 s.</p></li>
+<li><p>Station randomly selected from the subset of unrestricted European EIDA
+stations offering at least one out of channels <cite>HHZ</cite>, <cite>BHZ</cite>, <cite>EHZ</cite> or <cite>SHZ</cite>.</p></li>
+<li><p>Request full station metadata from selected station and choose channel
+randomly, restricted to channels <cite>HH?</cite>, <cite>BH?</cite>, <cite>EH?</cite> and <cite>SH?</cite>.</p></li>
+<li><p>On successful request apply a restitution to the waveform data.</p></li>
+<li><p>Evaluate and store result of request in a file database.</p></li>
+<li><p>Plot and statistically analyze content of file database.</p></li>
+</ul>
+<p>The code does not use the waveform catalog, therefore empty waveform returns
+are due to data gaps or due to problems in data access and delivery.</p>
+<p>An inventory of available EIDA stations is created regularly.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="eidaqc.eida_availability.DoubleProcessCheck">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">eidaqc.eida_availability.</span></span><span class="sig-name descname"><span class="pre">DoubleProcessCheck</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maxage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_availability.DoubleProcessCheck" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Check if a process is already running.</p>
+<p>Process id is stored in a temporary file
+while program is running.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_availability.DoubleProcessCheck.create_pidfile">
+<span class="sig-name descname"><span class="pre">create_pidfile</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_availability.DoubleProcessCheck.create_pidfile" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_availability.DoubleProcessCheck.process_active">
+<span class="sig-name descname"><span class="pre">process_active</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_availability.DoubleProcessCheck.process_active" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_availability.DoubleProcessCheck.release">
+<span class="sig-name descname"><span class="pre">release</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_availability.DoubleProcessCheck.release" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_availability.DoubleProcessCheck.should_exit">
+<span class="sig-name descname"><span class="pre">should_exit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_availability.DoubleProcessCheck.should_exit" title="Permalink to this definition"></a></dt>
+<dd><p>True, if instance is up and running. If not, a process file
+is created, returns False. Subsequent calls should return True.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="eidaqc.eida_availability.EidaAvailability">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">eidaqc.eida_availability.</span></span><span class="sig-name descname"><span class="pre">EidaAvailability</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eia_datapath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wanted_channels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('HHZ',</span> <span class="pre">'BHZ',</span> <span class="pre">'EHZ',</span> <span class="pre">'SHZ')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eia_global_timespan_days</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">365</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxcacheage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">432000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minreqlen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxreqlen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">600</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eia_timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eia_min_num_networks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">80</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_networks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_networks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">large_networks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inv_update_waittime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3600</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_availability.EidaAvailability" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Manage and execute quality control requests.</p>
+<p>The main methods to use are:
+- random_request()
+- process_request()</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_availability.EidaAvailability.errmsg">
+<span class="sig-name descname"><span class="pre">errmsg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_availability.EidaAvailability.errmsg" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_availability.EidaAvailability.get_inventory">
+<span class="sig-name descname"><span class="pre">get_inventory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force_cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_availability.EidaAvailability.get_inventory" title="Permalink to this definition"></a></dt>
+<dd><p>Read inventory from cache or from routing client.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_availability.EidaAvailability.get_station_meta">
+<span class="sig-name descname"><span class="pre">get_station_meta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">netsta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reqspan</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_availability.EidaAvailability.get_station_meta" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve full inventory of selected station.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_availability.EidaAvailability.is_operating">
+<span class="sig-name descname"><span class="pre">is_operating</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fullinv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">network</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_availability.EidaAvailability.is_operating" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_availability.EidaAvailability.logresult">
+<span class="sig-name descname"><span class="pre">logresult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reqspan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_availability.EidaAvailability.logresult" title="Permalink to this definition"></a></dt>
+<dd><p>Write result of request into a file database.</p>
+<p>Called by
+- <cite>process_request()</cite> to store request result
+- <cite>get_station_meta()</cite></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_availability.EidaAvailability.number_of_networks">
+<span class="sig-name descname"><span class="pre">number_of_networks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inv</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_availability.EidaAvailability.number_of_networks" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_availability.EidaAvailability.process_request">
+<span class="sig-name descname"><span class="pre">process_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">station</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stainv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reqspan</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_availability.EidaAvailability.process_request" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve and evaluate waveform data, result is a status code.</p>
+<p>Second main worker. Takes output of <cite>random_request()</cite> and
+executes the request.</p>
+<p>Status codes are stored in <cite>self.status</cite>. At the end, this
+info is written to a log file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_availability.EidaAvailability.random_request">
+<span class="sig-name descname"><span class="pre">random_request</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_availability.EidaAvailability.random_request" title="Permalink to this definition"></a></dt>
+<dd><p>Create random request parameters and return them.</p>
+<p>This is one of the main workers. It selects a random
+station, chooses an interval for the request,
+collects station meta data, randomly selects a
+channel from meta data and returns all as variables.
+Also available as <cite>self.requestpar</cite>.</p>
+<p>Returns <cite>None</cite> at any point where no info is found.</p>
+<p>Collective call of
+- self.select_random_station()
+- self._get_random_request_interval()
+- self.get_station_meta( sta, reqspan )
+- select_random_station_channel( stainv, infotext )</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_availability.EidaAvailability.select_random_station">
+<span class="sig-name descname"><span class="pre">select_random_station</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_availability.EidaAvailability.select_random_station" title="Permalink to this definition"></a></dt>
+<dd><p>Select random station from inventory.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_availability.EidaAvailability.select_random_station_channel">
+<span class="sig-name descname"><span class="pre">select_random_station_channel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stainv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">infotext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_availability.EidaAvailability.select_random_station_channel" title="Permalink to this definition"></a></dt>
+<dd><p>Select a random channel from selected station.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="eidaqc.eida_availability.RetryManager">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">eidaqc.eida_availability.</span></span><span class="sig-name descname"><span class="pre">RetryManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">waittime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3600</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_availability.RetryManager" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Manages age of inventory</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_availability.RetryManager.new_retry">
+<span class="sig-name descname"><span class="pre">new_retry</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_availability.RetryManager.new_retry" title="Permalink to this definition"></a></dt>
+<dd><p>Return True/False depending on age of flag file.</p>
+<p>Also try again if no flagfile exists.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_availability.RetryManager.try_failed">
+<span class="sig-name descname"><span class="pre">try_failed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_availability.RetryManager.try_failed" title="Permalink to this definition"></a></dt>
+<dd><p>Mark a failed try by touching the flag file.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="eidaqc.eida_availability.run">
+<span class="sig-prename descclassname"><span class="pre">eidaqc.eida_availability.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_availability.run" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="eidaqc.cmdline.html" class="btn btn-neutral float-left" title="eidaqc.cmdline module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="eidaqc.eida_config.html" class="btn btn-neutral float-right" title="eidaqc.eida_config module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Johanna Lehr, Klaus Stammler.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

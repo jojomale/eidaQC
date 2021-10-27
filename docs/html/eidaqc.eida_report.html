@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>eidaqc.eida_report module &mdash; EidaQC 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="eidaqc.statuscodes module" href="eidaqc.statuscodes.html" />
+    <link rel="prev" title="eidaqc.eida_logger module" href="eidaqc.eida_logger.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> EidaQC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="eidaqc.html">eidaqc package</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="eidaqc.html#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.html#install-dependencies">Install dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.html#using-conda">Using conda</a></li>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.html#without-conda">Without conda</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eidaqc.html#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.html#command-line-options">Command line options</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eidaqc.html#method">Method</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eidaqc.html#args">args:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eidaqc.html#configfile">configfile:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="eidaqc.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.cmdline.html">eidaqc.cmdline module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.eida_availability.html">eidaqc.eida_availability module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.eida_config.html">eidaqc.eida_config module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.eida_inventory.html">eidaqc.eida_inventory module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.eida_logger.html">eidaqc.eida_logger module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">eidaqc.eida_report module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="eidaqc.statuscodes.html">eidaqc.statuscodes module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">EidaQC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="eidaqc.html">eidaqc package</a> &raquo;</li>
+      <li>eidaqc.eida_report module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/eidaqc.eida_report.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-eidaqc.eida_report">
+<span id="eidaqc-eida-report-module"></span><h1>eidaqc.eida_report module<a class="headerlink" href="#module-eidaqc.eida_report" title="Permalink to this headline"></a></h1>
+<p>Create report of Eida inventory test and Eida availability test.</p>
+<p>For creation of reports, needs ‘pandoc’ and ‘convert’ (imagemagick).
+This also requires implementation specific code, see variables <a href="#id3"><span class="problematic" id="id4">eia_spec_</span></a>…</p>
+<p>Create report with:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`Python</span>
+<span class="pre">import</span> <span class="pre">EidaAvailability</span>
+<span class="pre">ar</span> <span class="pre">=</span> <span class="pre">EidaAvailability.AvailabilityReport()</span>
+<span class="pre">ar.make_md_report(</span> <span class="pre">'avreport.md'</span> <span class="pre">)</span>
+<span class="pre">pdfreport</span> <span class="pre">=</span> <span class="pre">ar.make_pdf_report(</span> <span class="pre">'avreport.md'</span> <span class="pre">)</span>
+<span class="pre">`</span></code></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="eidaqc.eida_report.AvailabilityReport">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">eidaqc.eida_report.</span></span><span class="sig-name descname"><span class="pre">AvailabilityReport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.AvailabilityReport" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#eidaqc.eida_report.BaseReport" title="eidaqc.eida_report.BaseReport"><code class="xref py py-class docutils literal notranslate"><span class="pre">eidaqc.eida_report.BaseReport</span></code></a></p>
+<p>Create statistics from Eida Availability test results.</p>
+<p><strong>Most likely, you want to call
+`AvailabilityReport.results2mdstr()`.</strong></p>
+<p>It creates two matplotlib-figures</p>
+<ul class="simple">
+<li><p><cite>AvailabilityReport.availability_map</cite> and</p></li>
+<li><p><cite>AvailabilityReport.hitplot</cite></p></li>
+</ul>
+<p>and a text summary in Markdown available as
+<cite>AvailabilityReport.mdstr</cite></p>
+<p><cite>mdstr</cite> has two open string formatters, intended to provide
+filenames of the figures as</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">`python</span>
+<span class="pre">mdstr</span> <span class="pre">%</span> <span class="pre">(figfile1,</span> <span class="pre">figfile2)</span>
+<span class="pre">`</span></code></p>
+</div></blockquote>
+<p>We assume that the availability test was run with the same
+parameters as in the config-file for the report. An object
+<cite>eida_availability.EidaAvailability()</cite> is created for the
+report.</p>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>The plotting functions extract and provide vital informations
+for the statistics. A cleaner separation of functionality
+might be helpful.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.AvailabilityReport.add_keyword">
+<span class="sig-name descname"><span class="pre">add_keyword</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keyw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.AvailabilityReport.add_keyword" title="Permalink to this definition"></a></dt>
+<dd><p>Store status codes for network statistics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.AvailabilityReport.add_stats">
+<span class="sig-name descname"><span class="pre">add_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cnt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.AvailabilityReport.add_stats" title="Permalink to this definition"></a></dt>
+<dd><p>Hit count statistics, how many stations have how many hits.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.AvailabilityReport.dump_netstat">
+<span class="sig-name descname"><span class="pre">dump_netstat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.AvailabilityReport.dump_netstat" title="Permalink to this definition"></a></dt>
+<dd><p>Write networks status statistics in different formats.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="eidaqc.eida_report.AvailabilityReport.failwords">
+<span class="sig-name descname"><span class="pre">failwords</span></span><em class="property"> <span class="pre">=</span> <span class="pre">('NODATA',</span> <span class="pre">'FRAGMENT',</span> <span class="pre">'INCOMPL',</span> <span class="pre">'METAFAIL',</span> <span class="pre">'RESTFAIL')</span></em><a class="headerlink" href="#eidaqc.eida_report.AvailabilityReport.failwords" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.AvailabilityReport.loop_files">
+<span class="sig-name descname"><span class="pre">loop_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.AvailabilityReport.loop_files" title="Permalink to this definition"></a></dt>
+<dd><p>Loop all networks and stations in file database,
+return availability and location.</p>
+<p>Output is used for plotting</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.AvailabilityReport.makeavailplot">
+<span class="sig-name descname"><span class="pre">makeavailplot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapgeo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.AvailabilityReport.makeavailplot" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>outfile</strong> (<em>str</em>) – file name</p></li>
+<li><p><strong>mapgeo</strong> (<em>dict</em>) – same as self.mapgeometry</p></li>
+<li><p><strong>(</strong><strong>5.10.21</strong><strong>)</strong> (<em>Comments</em>) – </p></li>
+<li><p><strong>------------------</strong> – </p></li>
+<li><p><strong>twice.</strong> (<em>- I don't think we need to call scatterplot</em>) – If data is sorted the plot order should be the same</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.AvailabilityReport.makehitplot">
+<span class="sig-name descname"><span class="pre">makehitplot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.AvailabilityReport.makehitplot" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="eidaqc.eida_report.AvailabilityReport.mapgeometry">
+<span class="sig-name descname"><span class="pre">mapgeometry</span></span><em class="property"> <span class="pre">=</span> <span class="pre">{'lat_ts':</span> <span class="pre">45.0,</span> <span class="pre">'latmax':</span> <span class="pre">71.5,</span> <span class="pre">'latmin':</span> <span class="pre">29.0,</span> <span class="pre">'lonmax':</span> <span class="pre">50.0,</span> <span class="pre">'lonmin':</span> <span class="pre">-11.0,</span> <span class="pre">'projection':</span> <span class="pre">&lt;Projected</span> <span class="pre">CRS:</span> <span class="pre">+proj=merc</span> <span class="pre">+ellps=WGS84</span> <span class="pre">+lon_0=30.5</span> <span class="pre">+x_0=0.0</span> <span class="pre">+y_0=</span> <span class="pre">...&gt;</span> <span class="pre">Name:</span> <span class="pre">unknown</span> <span class="pre">Axis</span> <span class="pre">Info</span> <span class="pre">[cartesian]:</span> <span class="pre">-</span> <span class="pre">E[east]:</span> <span class="pre">Easting</span> <span class="pre">(metre)</span> <span class="pre">-</span> <span class="pre">N[north]:</span> <span class="pre">Northing</span> <span class="pre">(metre)</span> <span class="pre">Area</span> <span class="pre">of</span> <span class="pre">Use:</span> <span class="pre">-</span> <span class="pre">undefined</span> <span class="pre">Coordinate</span> <span class="pre">Operation:</span> <span class="pre">-</span> <span class="pre">name:</span> <span class="pre">unknown</span> <span class="pre">-</span> <span class="pre">method:</span> <span class="pre">Mercator</span> <span class="pre">(variant</span> <span class="pre">A)</span> <span class="pre">Datum:</span> <span class="pre">Unknown</span> <span class="pre">based</span> <span class="pre">on</span> <span class="pre">WGS84</span> <span class="pre">ellipsoid</span> <span class="pre">-</span> <span class="pre">Ellipsoid:</span> <span class="pre">WGS</span> <span class="pre">84</span> <span class="pre">-</span> <span class="pre">Prime</span> <span class="pre">Meridian:</span> <span class="pre">Greenwich</span> <span class="pre">,</span> <span class="pre">'resolution':</span> <span class="pre">'i'}</span></em><a class="headerlink" href="#eidaqc.eida_report.AvailabilityReport.mapgeometry" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="eidaqc.eida_report.AvailabilityReport.okwords">
+<span class="sig-name descname"><span class="pre">okwords</span></span><em class="property"> <span class="pre">=</span> <span class="pre">('OK',)</span></em><a class="headerlink" href="#eidaqc.eida_report.AvailabilityReport.okwords" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.AvailabilityReport.parse_yearfile">
+<span class="sig-name descname"><span class="pre">parse_yearfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">okcnt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">failcnt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.AvailabilityReport.parse_yearfile" title="Permalink to this definition"></a></dt>
+<dd><p>Parse a single file in the file database and return the sum of
+evaluated status codes as well as a location.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.AvailabilityReport.parse_years">
+<span class="sig-name descname"><span class="pre">parse_years</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fpath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.AvailabilityReport.parse_years" title="Permalink to this definition"></a></dt>
+<dd><p>Parse all files of a station.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.AvailabilityReport.results2mdstr">
+<span class="sig-name descname"><span class="pre">results2mdstr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figfilenames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.AvailabilityReport.results2mdstr" title="Permalink to this definition"></a></dt>
+<dd><p>Create markdown formatted string from results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>figfilenames</strong> (<em>list of 2 str</em><em> or </em><em>None</em>) – filenames for the 2 figures</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.AvailabilityReport.total_number_of_stations">
+<span class="sig-name descname"><span class="pre">total_number_of_stations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.AvailabilityReport.total_number_of_stations" title="Permalink to this definition"></a></dt>
+<dd><p>Determine total number of stations, remove double entries and
+stations of excluded networks.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="eidaqc.eida_report.BaseReport">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">eidaqc.eida_report.</span></span><span class="sig-name descname"><span class="pre">BaseReport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loggername</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'BaseReport'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.BaseReport" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Provides utilities to create a report.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.BaseReport.display_pdf_report">
+<span class="sig-name descname"><span class="pre">display_pdf_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdffile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.BaseReport.display_pdf_report" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.BaseReport.dump2mdfile">
+<span class="sig-name descname"><span class="pre">dump2mdfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdfilename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mdstr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.BaseReport.dump2mdfile" title="Permalink to this definition"></a></dt>
+<dd><p>Writes <cite>mdstr</cite> or <cite>self.mdstr</cite> to <cite>mdfilename</cite>.</p>
+<p>Manages also if the file already exists and/or
+is already open for writing. Sets <cite>self.mdfile</cite>
+and <cite>self.fp</cite> to file handler.</p>
+<p><a href="#id1"><span class="problematic" id="id2">**</span></a><cite>self.fp</cite> is not closed!!!*</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.BaseReport.make_html_report">
+<span class="sig-name descname"><span class="pre">make_html_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cssfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.BaseReport.make_html_report" title="Permalink to this definition"></a></dt>
+<dd><p>Convert markdown to html report using pandoc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mdfile</strong> (<em>str</em><em> or </em><em>None</em>) – if None we look for self.mdfile which is set after
+self.running dump2mdfile()</p></li>
+<li><p><strong>cssfile</strong> (<em>str</em><em> or </em><em>None</em>) – CSS-style file. If None we use the one in the package</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.BaseReport.make_pdf_report">
+<span class="sig-name descname"><span class="pre">make_pdf_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pdfengine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pdflatex'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.BaseReport.make_pdf_report" title="Permalink to this definition"></a></dt>
+<dd><p>Convert markdown report to pdf via pandoc.</p>
+<p>Pandoc and a valid pandoc pdf-engine and the necessary
+latex packages must be installed.
+See <a class="reference external" href="https://pandoc.org/MANUAL.html#creating-a-pdf">https://pandoc.org/MANUAL.html#creating-a-pdf</a></p>
+<p>On Ubuntu you may use e.g. the texlive-latex-extra package
+(info updated 10/2021):</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">apt</span> <span class="pre">install</span> <span class="pre">texlive-latex-extra</span>
+<span class="pre">`</span></code></p>
+</div></blockquote>
+<p>Smaller texlive versions do not ship all necessary latex
+packages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mdfile</strong> (<em>str</em><em> or </em><em>None</em>) – if None, we use self.mdfile which is set after running
+self.dump2mdfile()</p></li>
+<li><p><strong>pdfengine</strong> (<em>str</em>) – passed to pandoc flag –pdf-engine.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.BaseReport.newpage">
+<span class="sig-name descname"><span class="pre">newpage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.BaseReport.newpage" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.BaseReport.repprint">
+<span class="sig-name descname"><span class="pre">repprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.BaseReport.repprint" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="eidaqc.eida_report.EidaTestReport">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">eidaqc.eida_report.</span></span><span class="sig-name descname"><span class="pre">EidaTestReport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.EidaTestReport" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#eidaqc.eida_report.BaseReport" title="eidaqc.eida_report.BaseReport"><code class="xref py py-class docutils literal notranslate"><span class="pre">eidaqc.eida_report.BaseReport</span></code></a></p>
+<p>Create report of Eida availability test
+and inventory test.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.EidaTestReport.daily_report">
+<span class="sig-name descname"><span class="pre">daily_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdfengine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pdflatex'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.EidaTestReport.daily_report" title="Permalink to this definition"></a></dt>
+<dd><p>Convenience function to create markdown,
+html and pdf report at once.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pdfengine</strong> (<em>str</em>) – see BaseReport.make_pdf_report()</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.EidaTestReport.infostr">
+<span class="sig-name descname"><span class="pre">infostr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.EidaTestReport.infostr" title="Permalink to this definition"></a></dt>
+<dd><p>Returns text incl. creation time and pandoc version</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.EidaTestReport.make_md_report">
+<span class="sig-name descname"><span class="pre">make_md_report</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.EidaTestReport.make_md_report" title="Permalink to this definition"></a></dt>
+<dd><p>Create markdown file of summary report on
+availability and inventory test.</p>
+<ul class="simple">
+<li><p>Runs <cite>results2mdstr</cite> on both reports.</p></li>
+<li><p>Runs <cite>dump2mdfile()</cite> on both reports.</p></li>
+<li><p>Adds own info string on creation time</p></li>
+<li><dl class="simple">
+<dt>names figure files as</dt><dd><p><cite>self.reportbase_fig123.png</cite></p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="eidaqc.eida_report.InventoryReport">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">eidaqc.eida_report.</span></span><span class="sig-name descname"><span class="pre">InventoryReport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_networks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.InventoryReport" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#eidaqc.eida_report.BaseReport" title="eidaqc.eida_report.BaseReport"><code class="xref py py-class docutils literal notranslate"><span class="pre">eidaqc.eida_report.BaseReport</span></code></a></p>
+<p>Evaluate and plot results of inventory test.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.InventoryReport.cumulate_failures">
+<span class="sig-name descname"><span class="pre">cumulate_failures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dfail</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rfail</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ddict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rdict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.InventoryReport.cumulate_failures" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.InventoryReport.parse_time">
+<span class="sig-name descname"><span class="pre">parse_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.InventoryReport.parse_time" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.InventoryReport.print_failure_rates">
+<span class="sig-name descname"><span class="pre">print_failure_rates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directfail</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">routefail</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directcnt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">routecnt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noerrcnt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">roclifailures</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.InventoryReport.print_failure_rates" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.InventoryReport.results2mdstr">
+<span class="sig-name descname"><span class="pre">results2mdstr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">respplot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'normal'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.InventoryReport.results2mdstr" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.InventoryReport.transref">
+<span class="sig-name descname"><span class="pre">transref</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">missnet</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.InventoryReport.transref" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="eidaqc.eida_report.MetaResponsePlot">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">eidaqc.eida_report.</span></span><span class="sig-name descname"><span class="pre">MetaResponsePlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">granularity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.MetaResponsePlot" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Create a plot with response info of all servers.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.MetaResponsePlot.dump">
+<span class="sig-name descname"><span class="pre">dump</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.MetaResponsePlot.dump" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.MetaResponsePlot.finish_index">
+<span class="sig-name descname"><span class="pre">finish_index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.MetaResponsePlot.finish_index" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.MetaResponsePlot.getcol">
+<span class="sig-name descname"><span class="pre">getcol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">srv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.MetaResponsePlot.getcol" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.MetaResponsePlot.inc_fail_count">
+<span class="sig-name descname"><span class="pre">inc_fail_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.MetaResponsePlot.inc_fail_count" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.MetaResponsePlot.inc_total_count">
+<span class="sig-name descname"><span class="pre">inc_total_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.MetaResponsePlot.inc_total_count" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.MetaResponsePlot.makeplot">
+<span class="sig-name descname"><span class="pre">makeplot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.MetaResponsePlot.makeplot" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.MetaResponsePlot.set_time">
+<span class="sig-name descname"><span class="pre">set_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.MetaResponsePlot.set_time" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eidaqc.eida_report.MetaResponsePlot.time_label">
+<span class="sig-name descname"><span class="pre">time_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eidaqc.eida_report.MetaResponsePlot.time_label" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="eidaqc.eida_logger.html" class="btn btn-neutral float-left" title="eidaqc.eida_logger module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="eidaqc.statuscodes.html" class="btn btn-neutral float-right" title="eidaqc.statuscodes module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Johanna Lehr, Klaus Stammler.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

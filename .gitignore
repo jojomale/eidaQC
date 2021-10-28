@@ -5,6 +5,7 @@ jupyter/
 *.ipynb
 testing/
 run_eida*
+gitsvn.sh
 
 __pycache__
 *.py[cod]

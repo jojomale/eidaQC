@@ -6,24 +6,13 @@ EIDA network. The tests are intended to be run on a regular
 basis, e.g. via a cron job. The package also creates an
 automatic summary report of the results.
 
+# Documentation
 
+https://eidaqc.readthedocs.io/
+
+(in progress)
 
 # Installation
-After installing the dependencies, eidaqc can be installed 
-via pip:
-
-From BGR's SVN-server:
-
-    ```bash
-    $ pip install pip install svn+svn://svn.hannover.bgr.de/EidaQualityCheck/trunk/eidaQC#egg=eidaqc
-    ```
-
-From source distribution:
-
-    ```bash
-    $ pip install eidaqc-0.0.1.tar.gz
-    ```
-
 
 ## Install dependencies
 -You need `pip` to install eidaqc.

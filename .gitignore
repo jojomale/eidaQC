@@ -1,3 +1,10 @@
+# Project-related files
+docs/html/
+docs/html/*
+jupyter/
+*.ipynb
+testing/
+
 __pycache__
 *.py[cod]
 *$py.class

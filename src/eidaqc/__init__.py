@@ -12,35 +12,27 @@ automatic summary report of the results.
 
 Installation
 ================
-After installing the dependencies, eidaqc can be installed 
-via pip:
-
-From BGR's SVN-server:
-
-.. code-block:: console
-
-    $ pip install pip install svn+svn://svn.hannover.bgr.de/EidaQualityCheck/trunk/eidaQC#egg=eidaqc
-    
-
-From source distribution:
-
-.. code-block:: console
-
-    $ pip install eidaqc-0.0.1.tar.gz
-
-
 
 Install dependencies
 --------------------------
-- https://scitools.org.uk/cartopy/docs/latest/installing.html
-- https://github.com/obspy/obspy/wiki#installation
-- https://docs.conda.io/projects/conda/en/4.6.0/_downloads/52a95608c49671267e40c689e0bc00ca/conda-cheatsheet.pdf
+You need `pip` to install eidaqc.
+
+The following packages are required to run eidaqc:
+- Cartopy: https://scitools.org.uk/cartopy/docs/latest/installing.html
+- Obspy: https://github.com/obspy/obspy/wiki#installation
+- Numpy
+- Matplotlib
+
+Cartopy and obspy themselves depend on a number of packages 
+including numpy and matplotlib.
+
+
 
 Using conda
--------------
+````````````
 eidaqc itself will be installed via pip. However conda makes
 the installation of the required packages a lot easier,
-notably for cartopy.
+especially for cartopy.
 
 You may want to create a virtual environment first:
 
@@ -53,26 +45,39 @@ You may want to create a virtual environment first:
 .. code-block:: console
 
     $ conda install -c conda-forge cartopy obspy matplotlib numpy
-    $ pip install eidaqc-0.0.1.tar.gz
+
 
 
 Without conda
----------------
+````````````````````````````
 Virtual environments can also be managed e.g. `virtualenv`.
 Installing the package including its dependencies directly from
 pip doesn't work because the dependencies have dependencies of
 their own. 
 In particular cartopy requires a installation of its dependencies
 in the right order, so please refer to their installation
-manual.
-Obspy wasn't tested so far.
-So after installing cartopy,obspy,numpy and matplotlib run:
+manual. Obspy wasn't tested so far.
+
+*If you can provide a working installation order please let us know.*
     
- .. code-block:: console
+ 
+
+Install eidaqc
+------------------
+After installing the dependencies, eidaqc can be installed 
+via pip from Github:
+
+.. code-block:: console
+
+    $ pip install git+https://github.com/jojomale/eidaQC.git
+
+    
+
+From source distribution:
+
+.. code-block:: console
 
     $ pip install eidaqc-0.0.1.tar.gz
-    
-
 
 
 Usage

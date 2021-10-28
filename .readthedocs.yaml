@@ -31,7 +31,7 @@ conda:
 
 # Optionally declare the Python requirements required to build your docs
 python:
-  version: "3.9"
+  # version: "3.9"
   # Install our python package before building the docs
   install:
     - method: pip

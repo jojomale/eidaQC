@@ -1,8 +1,16 @@
-Run test on data request processing in Eida virtual network.
+*This project is in still in development. It is usable but not*
+*all errors are handled properly*
+
+*# Known problems*
+- *Creation of a first station inventory from default configuration can be difficult. Try to remove network "NL" from the list*
+- *Log files for inventory test are rotating but no backup is created*
+
+Run tests on the [European Integrated Data Archive](http://www.orfeus-eu.org/data/eida/) for seismological data
+to check the availability of waveform data and the processing of metadata requests.
 
 This package provides two different tests to check the availability
-of data and the processing of data requests on the 
-EIDA network. The tests are intended to be run on a regular 
+of data and the processing of data requests on 
+EIDA. The tests are intended to be run on a regular 
 basis, e.g. via a cron job. The package also creates an
 automatic summary report of the results.
 

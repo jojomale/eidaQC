@@ -110,7 +110,10 @@ class EidaTestConfig():
             # 'eida_servers': self._split_ignoring_whitespace(
             #                 sec.get("eida_servers")),
             'endtime': self.get_time(sec.get("endtime")),
-            'maxlogage': sec.getint("maxlogage")
+            'rotate_log_at': sec.get("rotate_log_at"),
+            'rotate_log_at_time': self.get_time(
+                        sec.get("rotate_log_at_time")),
+            'inv_log_bckp_count': sec.getint("inv_log_bckp_count")
         }
         params.update(self.get_networks())        
         params.update({'starttime': self.get_time(sec.get("starttime"), 
@@ -320,9 +323,14 @@ invpar = {
 
 # NEW variables
 inv_update_waittime = 3600
-max_inv_log_age = 24*3600 
 inv_rep_timespan_days = 14  # Timespan in days before now for which inventory test is evaluated
 reportfile = "EidaTest_report.md"
+
+# Inventory test log file settings
+# We use only 'midnight' and 'W0-6'
+rotate_log_at = "midnight"
+rotate_log_at_time = "00:00:00"
+inv_log_bckp_count = 12
 
 
 def create_default_configfile(outfile=None):
@@ -415,8 +423,12 @@ def create_default_configfile(outfile=None):
                     "\nstarttime"] = str(reqint)
     # config[section]["# Servers to ask directly for data (not via RoutingClient)"+
                     # "\neida_servers"] = ", ".join(server_reference_networks.values())#eida_servers)
-    config[section]["# Seconds after which file with results is renewed" + 
-                    "\nmaxlogage"] = str(max_inv_log_age)
+    config[section]["# Rotate result file at 'midnight' (after 24h) or weekday 'W0-6' (0=Monday)" + 
+                    "\nrotate_log_at"] = str(rotate_log_at)
+    config[section]["# Time at which rollover occurs (in UTC) " + 
+                    "\nrotate_log_at_time"] = str(rotate_log_at_time)
+    config[section]["# number of files to keep from the past" + 
+                    "\ninv_log_bckp_count"] = str(inv_log_bckp_count)
     
 
     section = "Report"

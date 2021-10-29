@@ -1,18 +1,15 @@
 #! /usr/bin/env python
 #
-# file eida_inventory_test.py
+# file eida_inventory.py
 #      ======================
 #
+# J. Lehr, 29-Oct-2021
 # K. Stammler, 17-Jun-2020
 
 """
 Test 'get_stations' response, compare retrieved networks between routing
 client and separate requests to EIDA servers directly.
 
-Syntax:
-    eida_inventory_test.py <level>
-    
-    <level>     request level, 'network', 'station' or 'channel'
 """
 
 from __future__ import print_function
@@ -21,6 +18,7 @@ import sys
 import time
 import datetime
 import logging
+import logging.handlers
 
 from obspy import UTCDateTime, _get_version_string
 from obspy.clients.fdsn import RoutingClient
@@ -52,55 +50,96 @@ module_logger.setLevel(logging.DEBUG)
 class Logtext:
     """
     Manage output of results from inventory test
+
+    We use the logging module with a TimedRotatingFileHandler
+    to log the results. The handler allows to renew the 
+    current logfile at a specified time. A number of backup
+    files to be kept, counting from now into the past, can be
+    chosen.
+
+
+    Example
+    -----------
+    Start a new file at each monday at midnight, keep results
+    up to 1 year:
+
+    .. code-block::python
+        
+        # Renew at Monday
+        rotate_log_at = "W0"
+        
+        # Keep 52 weeks =~ 1 year
+        inv_log_bckp_count = 52
+
+        # Set time to midnight (the date doesn't matter here)
+        rotate_log_at_time=UTCDateTime("2100-01-01T00:00:00)
+
+    
+    From the config file only some arguments of the log handler
+    can be accessed, allowing only for rotations after 24h or 
+    7 days. However, if used as module you can set all 
+    additional parameters.
     """
-    def __init__( self, datapath, maxage=None):
+    
+    def __init__( self, datapath, rotate_log_at,
+                 inv_log_bckp_count, rotate_log_at_time=None,
+                 **kwargs):
         """
         Parameters
         ------------
         datapath : str
             directory for result file
-        maxage : int, float, None
-            maximum age of result file in seconds. If file is older
-            a new one is created, otherwise results are appended.
-            If None, results are appended. 
+        rotate_log_at: str 
+            corresponds to `when`
+        inv_log_bckp_count: int
+            correspond to `backupCount`
+        rotate_log_at_time: None, datetime.time
+            corresponds to `atTime`
+        kwargs :
+            pass additional parameters to 
+            TimedRotatingFileHandler
 
-        Warning
-        -----------
-        At the moment there is no backup of older result files if
-        maxage is not None.
+
+        
         """
-        self.logfile = datapath #os.path.join(datapath, 'eida_inventory_test.log')
+        
+        
+        # This is the logger for info and error messages
         self.logger = logging.getLogger(module_logger.name +
                         ".Logtext")
 
-        # Check if intended directory exists
-        if not os.path.exists(os.path.dirname(self.logfile)):
-            os.makedirs( os.path.dirname(self.logfile) )
-        # Is file too old?
-        elif maxage is not None:
-            try:
-                ctime = os.path.getctime(self.logfile)
-                if time.time()-ctime > maxage:
-                    print(time.time() - ctime)
-                    self.logger.info("Logfile is older than %i seconds" % maxage +
-                                " Starting new one...")
-                    self.logger.debug("Age is %.1f seconds" % (time.time()-ctime) +
-                                    "Max age is %.1f seconds" % maxage)
-                    os.remove(self.logfile)
-            except FileNotFoundError:
-                # Should occur only if file is used for first time
-                self.logger.info("No existing log file found.")
-            except:
-                raise
-        self.fp = open( self.logfile, 'a' )
-        self.logger.info("Find results in %s" %self.logfile)
 
+        # Now we create the logger for the results
+        datapath = os.path.join(datapath, "eida_inventory_test")
+        datapath = eida_config.expandpath(datapath) 
+        
+        ## Check if intended directory exists
+        if not os.path.exists(datapath):
+            self.logger.info("Created directory for results: %s" 
+                    % datapath)
+            os.makedirs(datapath)
+        else:
+            self.logger.debug('Assuming directory for results %s'
+                    % datapath)
+        
+        self.results = logging.getLogger('eida_inventory_test')
+        self.results.setLevel(logging.INFO)
+        
+        ## file handler
+        fh = logging.handlers.TimedRotatingFileHandler(
+                os.path.join(datapath, 'eida_invtest_log'), 
+                when=rotate_log_at, 
+                backupCount=inv_log_bckp_count, 
+                atTime=rotate_log_at_time, **kwargs)
+        fh.setLevel(logging.INFO)
+        
+        ## create formatter
+        hformatter = logging.Formatter('%(message)s')
+        fh.setFormatter(hformatter)
+        self.results.addHandler(fh)
+        self.fh = fh
 
-    def close( self ):
-        """
-        Close result file
-        """
-        self.fp.close()
+        self.logger.info("Find results in %s" %fh.baseFilename)
 
 
     def write( self, text ):
@@ -108,7 +147,7 @@ class Logtext:
         Write `text` to logger and result file.
         """
         self.logger.info( text )
-        self.fp.write( "%s\n" % text ) 
+        self.results.info( "%s" % text ) 
 
 
 #-------------------------------------------------------------------------------
@@ -118,12 +157,14 @@ class EidaInventory():
     Manage inventory test.
     """
     def __init__(self, reqlevel, 
-                maxlogage=None,
                 starttime=UTCDateTime(), 
                 endtime=UTCDateTime()-24*3600,
                 wanted_channels=('HHZ', 'BHZ', 'EHZ', 'SHZ'),
                 timeout=240, ref_networks_servers={},
-                 datapath=os.getcwd(), **kwargs):
+                datapath=os.getcwd(), rotate_log_at='midnight',
+                inv_log_bckp_count=30, rotate_log_at_time=None,
+                resultfile_kwargs={}, **kwargs):
+
         self.logger = logging.getLogger(module_logger.name +
                         ".EidaInventory")
         if reqlevel not in legal_reqlevels:
@@ -132,8 +173,11 @@ class EidaInventory():
         else:
             self.reqlevel = reqlevel
         
-        self.outfile = os.path.join(datapath, "eida_inventory_test.log")
-        self.lt = Logtext(self.outfile, maxlogage)
+        
+        self.lt = Logtext(datapath, rotate_log_at,
+                 inv_log_bckp_count, rotate_log_at_time,
+                 **resultfile_kwargs)
+        self.outfile = self.lt.fh.baseFilename
         self.channels = wanted_channels
         self.starttime = starttime
         self.endtime = endtime
@@ -209,7 +253,6 @@ class EidaInventory():
         except Exception as e:
             self.lt.write( "        FAILED: %s" % repr(e) )
             self.lt.write( "\n==========================================================\n" )
-            self.lt.close()
             exit()
         self.rnets = set( rinv.get_contents()['networks'] )
         
@@ -234,7 +277,6 @@ class EidaInventory():
         self.lt.write( "snets-rnets %s" % ', '.join(sorted(self.snets-self.rnets)) )
         self.lt.write( "runtime %3.1fs" % runtime )
         self.lt.write( "\n==========================================================\n" )
-        # self.lt.close()
 
 
 
@@ -264,7 +306,6 @@ def run(reqlevel, configfile):
     # ei.lt.write( "runtime %3.1fs" % runtime )
     # ei.lt.write( "\n==========================================================\n" )
     ei.print_results(runtime)
-    ei.lt.close()
     
     
 

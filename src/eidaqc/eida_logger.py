@@ -1,4 +1,5 @@
 
+import os
 import logging
 import logging.handlers
 
@@ -68,7 +69,7 @@ def configure_handlers(logger, loglevel_console, loglevel_file, eia_tmp_path,
 
     ## file handler
     fh = logging.handlers.TimedRotatingFileHandler(
-            eia_tmp_path + 'eida_availability_log', 
+            os.path.join(eia_tmp_path, 'eida_availability_log'), 
             when=log_timeunit, backupCount=log_backupcount, interval=log_interval)
     fh.setLevel(loglevel_file)
     

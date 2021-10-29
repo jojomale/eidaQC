@@ -45,7 +45,7 @@ import sys
 
 
 def main():
-    print(__doc__)
+    #print(__doc__)
     if len(sys.argv) < 2:
         print(__doc__)
         sys.exit()

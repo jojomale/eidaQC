@@ -1,11 +1,16 @@
 # Project-related files
 docs/html/
 docs/html/*
+docs/html/.*
 jupyter/
 *.ipynb
 testing/
 run_eida*
 gitsvn.sh
+docs/html/.doctrees/*
+docs/html/objects.inv
+docs/html/searchindex.js
+
 
 __pycache__
 *.py[cod]
@@ -113,3 +118,5 @@ GitHub.sublime-settings
 !.vscode/launch.json 
 !.vscode/extensions.json 
 .history
+
+

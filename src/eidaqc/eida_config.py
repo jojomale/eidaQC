@@ -41,9 +41,16 @@ class EidaTestConfig():
     def __init__(self, configfile, which=None):
         
         configfile = expandpath(configfile)
+
+        # Check if file exists
+        # If not raise FileNotFoundError 
+        # (otherwise config parser opens an empty file 
+        # and raises KeyErrors which is very confusing)
         if not os.path.isfile(configfile):
             raise FileNotFoundError("No config-file %s " % 
                     configfile)
+
+                    
         self.config = configparser.ConfigParser()
 
 

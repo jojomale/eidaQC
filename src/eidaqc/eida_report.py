@@ -26,6 +26,7 @@ pdfreport = ar.make_pdf_report( 'avreport.md' )
 
 
 from __future__ import print_function
+from glob import glob
 import os
 import sys
 # import time
@@ -686,62 +687,66 @@ class InventoryReport(BaseReport):
             mrp = None
        
         # Process content of log file
-        with open(self.einv.outfile, 'r') as file:
-            self.logger.debug("Reading inventory test results from\n" + 
-                            "%s" % self.einv.outfile)
-            for line in file.readlines():
-                if line.startswith('eida_inventory_test.py started at'):
-                    timestr = line.split()[3]
-                    currtime = datetime.datetime.strptime( timestr, 
-                                        statuscodes.TIMEFMT+':%S' )
-                    if self.stime is not None and currtime < self.stime:
-                        skip = True
+        files = glob(self.einv.outfile+'*')
+        files = [f for f in files if 
+                os.path.getmtime(f) > self.stime.timestamp()]
+        for fname in files:
+            with open(fname,  'r') as file:
+                self.logger.debug("Reading inventory test results from\n" + 
+                                "%s" % self.einv.outfile)
+                for line in file.readlines():
+                    if line.startswith('eida_inventory_test.py started at'):
+                        timestr = line.split()[3]
+                        currtime = datetime.datetime.strptime( timestr, 
+                                            statuscodes.TIMEFMT+':%S' )
+                        if self.stime is not None and currtime < self.stime:
+                            skip = True
+                            continue
+                        else:
+                            skip = False
+                        if mrp:
+                            mrp.set_time( currtime )
+                        self.directcnt += 1
+                        if routeactive:
+                            self.routecnt += 1
+                            if mrp:
+                                mrp.inc_total_count( 'ALL' )
+                    elif skip:
                         continue
-                    else:
-                        skip = False
-                    if mrp:
-                        mrp.set_time( currtime )
-                    self.directcnt += 1
-                    if routeactive:
-                        self.routecnt += 1
+                    elif 'reading inventory from server' in line:
+                        srv = line.split()[4]
+                        if srv == 'http://eida.geo.uib.no':
+                            srv = 'UIB/NORSAR'
+                        elif srv == 'https://eida.bgr.de':
+                            srv = 'BGR'
                         if mrp:
-                            mrp.inc_total_count( 'ALL' )
-                elif skip:
-                    continue
-                elif 'reading inventory from server' in line:
-                    srv = line.split()[4]
-                    if srv == 'http://eida.geo.uib.no':
-                        srv = 'UIB/NORSAR'
-                    elif srv == 'https://eida.bgr.de':
-                        srv = 'BGR'
-                    if mrp:
-                        mrp.inc_total_count( srv )
-                elif 'reading inventory from routing client' in line:
-                    srv = None
-                elif 'FAILED:' in line:
-                    if srv is None:
-                        self.roclifailures += 1
-                    else:
-                        failedlist.append( srv )
-                        if mrp:
-                            mrp.inc_fail_count( srv )
-                elif line.startswith('missing reference networks'):
-                    routeactive = True
-                    missnet = line.split()[3]
-                elif line.startswith('============'):
-                    timestr = currtime.strftime( "%d-%b-%Y_%T" )
-                    tmissnet = self.transref(missnet)
-                    if not failedlist and not missnet:
-                        self.noerrorcnt += 1
-                    if mode == 'normal':
-                        self.repprint( "%s %20s %20s" % (timestr,','.join(failedlist),tmissnet) )
-                    self.cumulate_failures( failedlist, tmissnet.split(','), 
-                                        self.directfail, self.routefail )
-                    if tmissnet and mrp:
-                        for srv in tmissnet.split(','):
-                            mrp.inc_fail_count( srv )
-                    failedlist = []
-                    missnet = ""
+                            mrp.inc_total_count( srv )
+                    elif 'reading inventory from routing client' in line:
+                        srv = None
+                    elif 'FAILED:' in line:
+                        if srv is None:
+                            self.roclifailures += 1
+                        else:
+                            failedlist.append( srv )
+                            if mrp:
+                                mrp.inc_fail_count( srv )
+                    elif line.startswith('missing reference networks'):
+                        routeactive = True
+                        missnet = line.split()[3]
+                    elif line.startswith('============'):
+                        timestr = currtime.strftime( "%d-%b-%Y_%T" )
+                        tmissnet = self.transref(missnet)
+                        if not failedlist and not missnet:
+                            self.noerrorcnt += 1
+                        if mode == 'normal':
+                            self.repprint( "%s %20s %20s" % (timestr,','.join(failedlist),tmissnet) )
+                        self.cumulate_failures( failedlist, tmissnet.split(','), 
+                                            self.directfail, self.routefail )
+                        if tmissnet and mrp:
+                            for srv in tmissnet.split(','):
+                                mrp.inc_fail_count( srv )
+                        failedlist = []
+                        missnet = ""
         
         if mrp: mrp.finish_index()
 

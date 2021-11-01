@@ -80,7 +80,7 @@ class EidaTestConfig():
 
         if not os.path.isdir(params['eia_tmp_path']):
             module_logger.warn("given eia_tmp_path " + 
-                    "%s" % params['eia_tmp_path'] + 
+                    "%s " % params['eia_tmp_path'] + 
                     "is not a valid directory! Using " + 
                     "current working directory instead")
             params['eia_tmp_path'] = os.getcwd()

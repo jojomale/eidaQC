@@ -1,9 +1,8 @@
 *This project is in still in development. It is usable but not*
 *all errors are handled properly*
 
-*# Known problems*
-- *Creation of a first station inventory from default configuration can be difficult. Try to remove network "NL" from the list*
-- *Log files for inventory test are rotating but no backup is created*
+# *Known problems*
+- *Log files for inventory test are rotating but backup files are not included in report*
 
 Run tests on the [European Integrated Data Archive](http://www.orfeus-eu.org/data/eida/) for seismological data
 to check the availability of waveform data and the processing of metadata requests.

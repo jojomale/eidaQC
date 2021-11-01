@@ -24,7 +24,10 @@ method:
     and html-style file
 
 args:
-    - avail: none
+    - avail: ignore-missing (optional), if given
+        missing reference networks after inventory
+        update are ignored. Use to force the creation
+        of an initial inventory.
     - inv: request level for inventory. Any of
         'network', 'station' or 'channel'
     - rep: none
@@ -55,8 +58,13 @@ def main():
 
     configfile = sys.argv[-1]
     if "avail" in prg.lower():
+        if "ignore-missing" in sys.argv:
+            ignore_missing = True
+        else:
+            ignore_missing = False
         from . import eida_availability
-        eida_availability.run(configfile, maxage=1)
+        eida_availability.run(configfile, maxage=1, 
+                    ignore_missing=ignore_missing)
 
     elif "inv" in prg.lower():
         from . import eida_inventory

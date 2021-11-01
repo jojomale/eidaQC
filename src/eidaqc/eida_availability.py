@@ -71,12 +71,15 @@ class EidaAvailability:
     - process_request()
     """
 
-    def __init__( self, eia_datapath=None, wanted_channels=('HHZ', 'BHZ', 'EHZ', 'SHZ'),
+    def __init__( self, eia_datapath=None, 
+                 wanted_channels=('HHZ', 'BHZ', 'EHZ', 'SHZ'),
                  eia_global_timespan_days=365, maxcacheage=5*86400,
                  minreqlen=60, maxreqlen=600, eia_timeout=60,
                  eia_min_num_networks=80, 
-                 reference_networks=[], exclude_networks=[], large_networks={},
-                 inv_update_waittime=3600):
+                 reference_networks=[], exclude_networks=[], 
+                 large_networks={},
+                 inv_update_waittime=3600, 
+                 ignore_missing=False):
 
         self.logger = logging.getLogger(module_logger.name+'.EidaAvailability')
         self.logger.setLevel(logging.DEBUG)
@@ -120,7 +123,7 @@ class EidaAvailability:
         self.requestpar = None
         self.trymgr = RetryManager( 'eidainventory', inv_update_waittime )
         # self._check_datapath()
-        
+        self.ignore_missing = ignore_missing
 
     def _check_path(self, pname, varname=''):
         """
@@ -188,9 +191,13 @@ class EidaAvailability:
                 % self.number_of_networks(slist) )
             return None
         elif self._servers_missing(slist):
-            self.logger.warning( "update of inventory failed, servers missing %s"
-                % ','.join(self._servers_missing(slist)) )
-            return None
+            if self.ignore_missing:
+                self.logger.warning( "Ignoring missing servers %s " %
+                        ','.join(self._servers_missing(slist)) )
+            else:
+                self.logger.warning( "update of inventory failed, servers missing %s"
+                    % ','.join(self._servers_missing(slist)) )
+                return None
         fp = open( self.slist_cache, 'wb' )
         pickle.dump( slist, fp )
         fp.close()
@@ -246,10 +253,12 @@ class EidaAvailability:
     
     
     def _servers_missing( self, inv ):
-        """Check inventory for reference networks = main network of each server."""
+        """
+        Check inventory for reference networks = main network of each server.
+        """
         rnets = inv.get_contents()['networks']
         miss = []
-        self.logger.debug(self.reference_networks)
+        # self.logger.debug(self.reference_networks)
         for net in self.reference_networks:
             if net not in rnets:
                 miss.append( net )
@@ -592,7 +601,7 @@ class RetryManager:
 
 
 #-------------------------------------------------------------------------------
-def run(configfile, maxage=60):  
+def run(configfile, maxage=60, ignore_missing=False):  
 
     print("Run eida availability")
     print("__PACKAGE__", __package__)
@@ -612,7 +621,7 @@ def run(configfile, maxage=60):
         "\n".join(["\t{} : {}".format(k,str(v)) for k, v in params.items()]))
     
     stamp = time.time()
-    eia = EidaAvailability(**params)
+    eia = EidaAvailability(ignore_missing=ignore_missing, **params)
     rr = eia.random_request()
     if rr is not None:
         eiaresult = eia.process_request( *rr )

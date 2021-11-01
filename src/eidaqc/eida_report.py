@@ -628,7 +628,7 @@ class InventoryReport(BaseReport):
     def __init__(self, config, reference_networks={}, stime=None) -> None:
         
         super().__init__("InventoryReport")
-        self.logger.debug("Creating InventoryReport")
+        self.logger.info("Creating InventoryReport")
         
         self.einv = EidaInventory("network", 
                             **config.get_invtest_dict())

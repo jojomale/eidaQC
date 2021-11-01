@@ -47,6 +47,7 @@ import logging.handlers
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
+from obspy.core.utcdatetime import UTCDateTime
 
 from .eida_logger import create_logger
 from .eida_availability import EidaAvailability
@@ -675,6 +676,44 @@ class InventoryReport(BaseReport):
         return mdfigtext
 
 
+    def _get_logfiles(self):
+        """
+        Get inventory logfiles between now and starttime 
+        of report window.
+
+        - Gets a list of inventory test log files which have 
+          names of form 
+         `eia_datapath/eida_inentory_test/eida_invtest_log.YYYY-MM-DD`.
+        - Create sublist with files for which date ending 
+          `YYYY-MM-DD` > starttime of report
+        - Latest results are in file `eida_invtest_log` without
+          date extension.
+        
+        """
+        files = glob(self.einv.outfile+'*')
+        #print(files)
+        ## Version where we use only modification time
+        # files = [f for f in files if 
+        #         os.path.getmtime(f) > self.stime.timestamp()]
+        files.sort()
+        files.reverse()
+        # Latest file has no date in extention 
+        # --> now last in list
+        ofiles = [files.pop(-1)]
+        for f in files:
+            #print(f)
+            #print(os.path.splitext(f)[-1])
+            ext = os.path.splitext(f)[-1]
+            ftime = UTCDateTime.strptime(ext, ".%Y-%m-%d")
+            if ftime - UTCDateTime(self.stime) > -24*3600:
+                ofiles.append(f)
+            else:
+                break
+        self.logger.debug("Creating inventory report from files %s" %
+            ", ".join( ofiles))
+        return ofiles
+
+
     def results2mdstr(self, respplot=None, mode="normal" ):
         skip = False
         routeactive = False
@@ -686,14 +725,15 @@ class InventoryReport(BaseReport):
         else:
             mrp = None
        
-        # Process content of log file
-        files = glob(self.einv.outfile+'*')
-        files = [f for f in files if 
-                os.path.getmtime(f) > self.stime.timestamp()]
+        # Process content of log files
+        ## Get 
+        files = self._get_logfiles()
+        self.logger.debug("Creating inventory report from files %s" %
+            ", ".join( files))
         for fname in files:
             with open(fname,  'r') as file:
                 self.logger.debug("Reading inventory test results from\n" + 
-                                "%s" % self.einv.outfile)
+                                "%s" % fname)
                 for line in file.readlines():
                     if line.startswith('eida_inventory_test.py started at'):
                         timestr = line.split()[3]

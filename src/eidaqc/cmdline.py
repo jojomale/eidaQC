@@ -54,9 +54,10 @@ def main():
         sys.exit()
 
     prg = sys.argv[1]
-    print("Starting", prg)
+    print("Starting eida", prg)
 
     configfile = sys.argv[-1]
+    print("Reading configuration from %s" % configfile)
     if "avail" in prg.lower():
         if "ignore-missing" in sys.argv:
             ignore_missing = True

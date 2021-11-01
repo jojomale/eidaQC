@@ -109,5 +109,5 @@ def configure_handlers(logger, loglevel_console, loglevel_file, eia_tmp_path,
     #logger_ea.addHandler(ch)
     #logger_ea.propagate = False
     #logger_ea.addHandler(fh) 
-    logger.info("Find log file at %s" % eia_tmp_path + 
-                'EidaAvailability.log')
+    logger.info("Find log file at %s" % 
+        os.path.join(eia_tmp_path, 'eida_availability_log'))

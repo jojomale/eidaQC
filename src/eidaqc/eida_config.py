@@ -227,8 +227,10 @@ class EidaTestConfig():
 
 
 def expandpath(p):
-    return (os.path.abspath(os.path.expandvars(
-                os.path.expandvars(os.path.normpath(p)))))
+    return (os.path.abspath(
+                os.path.expanduser(
+                    os.path.expandvars(
+                        os.path.normpath(p)))))
 
 
 

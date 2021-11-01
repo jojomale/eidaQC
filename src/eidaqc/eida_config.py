@@ -39,7 +39,14 @@ module_logger.setLevel(logging.DEBUG)
 
 class EidaTestConfig():
     def __init__(self, configfile, which=None):
+        
+        configfile = expandpath(configfile)
+        if not os.path.isfile(configfile):
+            raise FileNotFoundError("No config-file %s " % 
+                    configfile)
         self.config = configparser.ConfigParser()
+
+
         self.config.read(configfile)
         # print(['{}:{}'.format(k, str(v)) for k, v in 
         #         self.config.items()])

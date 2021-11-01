@@ -973,6 +973,8 @@ class EidaTestReport(BaseReport):
         
         self.reportbase = config.report['reportbase']
         self.repfile = self.reportbase + ".md"
+
+        self.logger.debug("filebase for output %s" % self.reportbase)
         self.inventory_report = InventoryReport(config,
                     config.get_networks_servers(),
                     #_stime  

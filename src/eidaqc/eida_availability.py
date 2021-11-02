@@ -784,7 +784,25 @@ class RetryManager:
 
 
 #-------------------------------------------------------------------------------
-def run(configfile, maxage=60, ignore_missing=False):  
+def run(configfile, maxage=60, ignore_missing=False): 
+    """
+    Execute EIDA data availability test using parameters
+    from ``configfile``
+
+    - Reads configuration file
+    - configures logging handler (error messages and 
+        runtime info)
+    - initializes ``EidaAvailability``
+    - selects a random station from available meta data
+      via ``random_request()``
+    - requests test data and tries to apply restitution
+      via ``process_request()``
+
+    
+    Notes
+    -----------
+    Only runs if no other instance is found (``DoubleProcessCheck()``)
+    """ 
 
     ## Run Check
     pcheck = DoubleProcessCheck(maxage=maxage)

@@ -16,19 +16,25 @@
 # pdfreport = ar.make_pdf_report( 'avreport.md' )
 
 """
-Availability test of EIDA stations using Python obspy library.
+Test availability of data on random station in 
+European Integrated Data Archive.
+
+
 
 - Conducts random waveform requests to single channels of EIDA stations.
-- One request per minute.
 - Requested time span randomly selected from last year, span length between
   60 and 600 s.
-- Station randomly selected from the subset of unrestricted European EIDA
+- Station randomly selected from the subset of unrestricted 
+  European EIDA
   stations offering at least one out of channels `HHZ`, `BHZ`, `EHZ` or `SHZ`.
 - Request full station metadata from selected station and choose channel
   randomly, restricted to channels `HH?`, `BH?`, `EH?` and `SH?`.
 - On successful request apply a restitution to the waveform data.
 - Evaluate and store result of request in a file database.
 - Plot and statistically analyze content of file database.
+- Intended use case is to regularly run the request e.g. via cron job
+  to build up a data base. The results can be evaluated using the
+  module `eida_report`.
 
 The code does not use the waveform catalog, therefore empty waveform returns
 are due to data gaps or due to problems in data access and delivery.
@@ -64,7 +70,7 @@ module_logger.setLevel(logging.DEBUG)
 #-------------------------------------------------------------------------------
 class EidaAvailability:
     """
-    Manage and execute quality control requests.
+    Manage and execute random data requests.
 
     The main methods to use are:
     - random_request()
@@ -80,6 +86,102 @@ class EidaAvailability:
                  large_networks={},
                  inv_update_waittime=3600, 
                  ignore_missing=False):
+
+        
+        """
+        Parameters
+        --------------
+        eia_datapath : str, None
+            path to output directory. In this directory results
+            are placed in a sub-directory `log` 
+        wanted_channels : tuple of str
+            channels used to create inventory. However for actual 
+            request any of available channels at a station is selected.
+            Default: ('HHZ', 'BHZ', 'EHZ', 'SHZ'),
+        eia_global_timespan_days : int [365]
+            days into the past for which data requests will be created 
+        maxcacheage : int, [5*86400]
+            age of cached inventory in seconds. If inventory file is
+            older, a new one is created from service. 
+        minreqlen : int, [60]
+            minimum length of waveform to request, in seconds
+        maxreqlen: int, [600]
+            maximum length of waveform, in seconds
+        eia_timeout : int, [60]
+            timeout in seconds for server requests, passed to
+            `RoutingClient( "eida-routing" ).get_stations()`
+        eia_min_num_networks : int [80]
+            minimum number of networks in new inventory to accept it 
+        reference_networks : list of str []
+            list of reference networks, that must be present to accept
+            the automatic inventory from service 
+        exclude_networks : list of str []
+            list of networks to exclude from selection for data request.
+            Can be e.g. non-european networks that are available through
+            the Eida-routing client; or very small or temporary networks
+        large_networks : dict
+            indicate probability for selection for specific networks.
+            E.g. set `large_networks = {'NL':0.5}` to reduce probability
+            for selecting a station from network 'NL'
+        inv_update_waittime : int [3600]
+            seconds to wait until update of inventory from service is
+            tried again after failure. 
+        ignore_missing : bool [False]
+            ignore missing reference networks when inventory is 
+            updated from service. Useful to create an initial 
+            inventory.
+
+
+        Notes
+        --------
+        - *Channels*: `wanted_channel` is only used when an inventory
+            of metadata is created by the obspy routing client. From
+            this inventory a station is selected randomly. Subsequently,
+            meta data at response level is requested again specifically
+            for the targeted station. From this new meta data, a random
+            channel is selected randomly for which data is requested.
+            In other words, even if `wanted_channels` contains only 
+            z-components, data will be requested for other components 
+            as well.
+        - *reference networks*: These should be large networks, which
+            are representative for different servers. If one of these
+            networks is missing in the inventory after update from
+            service, the cached inventory is used, unless 
+            `ignore_missing=True`. Most likely the
+            server which provides this network was not available to
+            the routing client at the time of request. Assuming that
+            the old inventory is more complete, it is used until a
+            successfull update yields all reference networks.
+            This may however be problematic at the beginning when no
+            cached inventory is available. For this purpose, use
+            `ignore_missing=True`
+        - *large networks*: By default, all networks have equal chance
+            of 1 to be selected for a data request. However, this may 
+            lead to overrepresentation of very large networks in the
+            statistics. A common setting might be `{'NL': 0.5}`.
+        - *Meta data (inventory) update*: Meta data (names of networks,
+            available stations and channels) is obtained using 
+            [routing_client.RoutingClient("eida-routing").get_stations()`](https://docs.obspy.org/packages/autogen/obspy.clients.fdsn.routing.routing_client.RoutingClient.html#obspy.clients.fdsn.routing.routing_client.RoutingClient)
+            from [`obspy.clients.fdsn`](https://docs.obspy.org/packages/obspy.clients.fdsn.html#module-obspy.clients.fdsn)
+            We ask regularly (`maxcacheage`) for all meta data at channel level 
+            (i.e. network, station
+            and channel names). The inventory is stored as `chanlist_cache.pickle`
+            in the output directory. This cached inventory is used until it is
+            older than `maxcacheage` seconds. Then a new inventory is requested
+            from servive.
+            Ideally, all servers contributing to EIDA
+            respond and a full inventory of all networks in EIDA is obtained.
+            This is approximately tested by checking if all reference networks
+            are present. Moreover a minimum number of `eia_min_num_networks`
+            should be present.
+            If this is not the case, we reuse the old inventory for now, but
+            try to update the inventory from service every 
+            `inv_update_waittime` seconds. 
+            Please choose `inv_update_waittime` and `maxcacheage` carefully
+            since these routing requests place a significant
+            load in the servers and should not be called more often than 
+            necessary.
+        """
 
         self.logger = logging.getLogger(module_logger.name+'.EidaAvailability')
         self.logger.setLevel(logging.DEBUG)
@@ -125,6 +227,7 @@ class EidaAvailability:
         # self._check_datapath()
         self.ignore_missing = ignore_missing
 
+
     def _check_path(self, pname, varname=''):
         """
         Manage path to results.
@@ -135,7 +238,7 @@ class EidaAvailability:
         a directory. We check for existence of this directory
         and create new one if absent. Expands users and variables
         in path.
-        If `pname` is 
+        
 
         Parameters
         ------------
@@ -143,7 +246,8 @@ class EidaAvailability:
             path to directory where results are stored. If None, 
             current working directory is used.
         varname : str
-            Provide name of variable for logger
+            Provide name of variable for a meaningful logger
+            message
         """
         if not isinstance(pname, str) and pname is not None:
             pname = os.getcwd()
@@ -176,7 +280,34 @@ class EidaAvailability:
 
 
     def _get_inventory_from_service( self ):
-        """Retrieve station inventory from EIDA routing client."""
+        """
+        Retrieve station inventory from EIDA routing client.
+        
+        Requests a full inventory of all available networks,
+        stations, channels in EIDA.
+
+        Returns
+        -------------
+        obspy inventory or None
+
+        Calls:
+
+        ..code-block::python
+        
+            slist = RoutingClient( "eida-routing" ).get_stations( 
+                level='channel',
+                channel=','.join(self.wanted_channels),
+                starttime=UTCDateTime()-86400*eia_global_timespan_days, 
+                endtime=UTCDateTime(),
+                timeout=self.eia_timeout, includerestricted=False )
+        
+        If total number of networks in `slist` 
+        is > `eia_min_num_networks` and no networks from 
+        `reference_networks` are missing, the inventory is stored as
+        pickle `'chanlist_cache.pickle'` to be used by 
+        `_get_inventory_from_cache()`.
+        Returns `None` if any of the above fails.
+        """
         try:
             self.logger.info('updating inventory from service')
             slist = self.roc.get_stations( level='channel',
@@ -203,9 +334,11 @@ class EidaAvailability:
         fp.close()
         return slist
     
+
     def _get_inventory_from_cache( self, overrideage=False ):
         """
-        Read station inventory from file cache.
+        Read station inventory from cached pickle 
+        `self..slist_cache`.
         
         Returns `None` if 
         - no cached pickle file is found or
@@ -223,6 +356,7 @@ class EidaAvailability:
         fp.close()
         return slist
     
+
     def get_inventory( self, force_cache=False ):
         """
         Read inventory from cache or from routing client.
@@ -254,7 +388,9 @@ class EidaAvailability:
     
     def _servers_missing( self, inv ):
         """
-        Check inventory for reference networks = main network of each server.
+        Check inventory `inv` for reference networks.
+        
+        reference networks = main network of each server.
         """
         rnets = inv.get_contents()['networks']
         miss = []
@@ -264,11 +400,23 @@ class EidaAvailability:
                 miss.append( net )
         return miss
     
+
     def number_of_networks( self, inv ):
+        """
+        Get number of networks in inventory `inv`.
+        """
         return len(set(inv.get_contents()['networks']))
     
+
     def select_random_station( self ):
-        """Select random station from inventory."""
+        """
+        Select random station from inventory.
+        
+        Notes
+        -------
+        - Calls `get_inventory()`
+        - Uses `self.large_networks()`
+        """
         slist = self.get_inventory()
         stalist = list( set(slist.get_contents()['stations']) )
         while True:
@@ -286,7 +434,19 @@ class EidaAvailability:
                 break
         return selsta
     
+
     def is_operating( self, fullinv, network, station ):
+        """
+        Check in inventory if station is currently operating.
+
+        Parameters
+        -----------------------
+        fullinv : obspy inventory
+            inventory (usually the full Eida inventory
+            obtained from cache or routing client)
+        network : str
+        station : str
+        """
         selinv = fullinv.select( network=network, station=station )
         if len(selinv) < 1:
             return False
@@ -308,8 +468,18 @@ class EidaAvailability:
         randend = randstart + reqspan
         return (randstart,randend)
     
+
     def get_station_meta( self, netsta, reqspan ):
-        """Retrieve full inventory of selected station."""
+        """
+        Retrieve full inventory including response of selected station.
+
+        Parameters
+        ----------------
+        netsta : str
+            network and station as 'net.sta'
+        reqspan : list-like, len=2
+            start and end time for request interval
+        """
         net, sta = netsta.split('.')
         try:
             self.logger.debug("Requesting meta data for %s" % netsta)
@@ -326,8 +496,18 @@ class EidaAvailability:
             return None
         return inv
     
+
     def select_random_station_channel( self, stainv, infotext='' ):
-        """Select a random channel from selected station."""
+        """
+        Randomly select channel from station inventory.
+
+        Parameters
+        -------------------
+        stainv : obspy inventory
+        infotext : str
+            passed to logger message
+        """
+        
         self.logger.debug("Selecting random channel")
         wchan = [c[0:2] for c in self.wanted_channels]
         sellist = []
@@ -342,6 +522,7 @@ class EidaAvailability:
             return None
         return sellist[np.random.randint(0,len(sellist))]
     
+
     def random_request( self ):
         """
         Create random request parameters and return them.
@@ -378,6 +559,7 @@ class EidaAvailability:
         self.requestpar = (sta, selchan, stainv, reqspan)
         return (sta,selchan,stainv,reqspan)
     
+    
     def process_request( self, station, channel, stainv, reqspan ):
         ## `station` is never used!!! (JL)
         """
@@ -388,6 +570,23 @@ class EidaAvailability:
 
         Status codes are stored in `self.status`. At the end, this 
         info is written to a log file.
+
+        Parameters
+        --------------
+        Takes output of `random_request()`.
+        station : 
+            not used
+        channel : str
+            string giving 'network.station.location.channel'
+        stainv : inventory
+            corresponding inventory
+        reqspan : list-like, len 2
+            start and end time
+
+        Returns
+        ---------
+        status, meta_time, wave_time
+
         """
         net, sta, loc, chan = channel.split('.')
         ## Try to collect requested waveform snippet
@@ -635,4 +834,4 @@ def run(configfile, maxage=60, ignore_missing=False):
 
 
 if __name__ == '__main__':
-    run()
+    print(__doc__)

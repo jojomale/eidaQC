@@ -799,6 +799,23 @@ def run(configfile, maxage=60, ignore_missing=False):
       via ``process_request()``
 
     
+    Parameters
+    ---------------
+    configfile : str, path-like
+        path and name of configuration file. Passed to
+        ``eida_config``
+    maxage : int
+        does not run if another process is found which 
+        started less than ``maxage`` seconds ago.
+        Passed to ``DoubleProcessCheck()``
+    ignore_missing : bool [False]
+        Whether missing reference networks in inventory
+        should be ignored when updating from service.
+        Helpful to force creation of an initial inventory
+        cache.
+
+
+
     Notes
     -----------
     Only runs if no other instance is found (``DoubleProcessCheck()``)

@@ -557,10 +557,10 @@ class EidaAvailability:
         if selchan is None:
             return None
         self.requestpar = (sta, selchan, stainv, reqspan)
-        return (sta,selchan,stainv,reqspan)
+        return (selchan,stainv,reqspan)
     
-    
-    def process_request( self, station, channel, stainv, reqspan ):
+
+    def process_request( self, channel, stainv, reqspan ):
         ## `station` is never used!!! (JL)
         """
         Retrieve and evaluate waveform data, result is a status code.

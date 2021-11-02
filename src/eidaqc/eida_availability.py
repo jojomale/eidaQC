@@ -75,6 +75,104 @@ class EidaAvailability:
     The main methods to use are:
     - random_request()
     - process_request()
+
+    Parameters
+    --------------
+    eia_datapath : str, None
+        path to output directory. In this directory results
+        are placed in a sub-directory `log` 
+    wanted_channels : tuple of str
+        channels used to create inventory. However for actual 
+        request any of available channels at a station is selected.
+        Default: ('HHZ', 'BHZ', 'EHZ', 'SHZ'),
+    eia_global_timespan_days : int [365]
+        days into the past for which data requests will be created 
+    maxcacheage : int, [5*86400]
+        age of cached inventory in seconds. If inventory file is
+        older, a new one is created from service. 
+    minreqlen : int, [60]
+        minimum length of waveform to request, in seconds
+    maxreqlen: int, [600]
+        maximum length of waveform, in seconds
+    eia_timeout : int, [60]
+        timeout in seconds for server requests, passed to
+        `RoutingClient( "eida-routing" ).get_stations()`
+    eia_min_num_networks : int [80]
+        minimum number of networks in new inventory to accept it 
+    reference_networks : list of str []
+        list of reference networks, that must be present to accept
+        the automatic inventory from service 
+    exclude_networks : list of str []
+        list of networks to exclude from selection for data request.
+        Can be e.g. non-european networks that are available through
+        the Eida-routing client; or very small or temporary networks
+    large_networks : dict
+        indicate probability for selection for specific networks.
+        E.g. set `large_networks = {'NL':0.5}` to reduce probability
+        for selecting a station from network 'NL'
+    inv_update_waittime : int [3600]
+        seconds to wait until update of inventory from service is
+        tried again after failure. 
+    ignore_missing : bool [False]
+        ignore missing reference networks when inventory is 
+        updated from service. Useful to create an initial 
+        inventory.
+
+
+    Notes
+    --------
+    - *Channels*: 
+        ``wanted_channel`` is only used when an inventory
+        of metadata is created by the obspy routing client. From
+        this inventory a station is selected randomly. Subsequently,
+        meta data at response level is requested again specifically
+        for the targeted station. From this new meta data, a random
+        channel is selected randomly for which data is requested.
+        In other words, even if ``wanted_channels`` contains only 
+        z-components, data will be requested for other components 
+        as well.
+    - *reference networks*: 
+        These should be large networks, which
+        are representative for different servers. If one of these
+        networks is missing in the inventory after update from
+        service, the cached inventory is used, unless 
+        ``ignore_missing=True``. Most likely the
+        server which provides this network was not available to
+        the routing client at the time of request. Assuming that
+        the old inventory is more complete, it is used until a
+        successfull update yields all reference networks.
+        This may however be problematic at the beginning when no
+        cached inventory is available. For this purpose, use
+        ``ignore_missing=True``
+    - *large networks*: 
+        By default, all networks have equal chance
+        of 1 to be selected for a data request. However, this may 
+        lead to overrepresentation of very large networks in the
+        statistics. A common setting might be ``{'NL': 0.5}``.
+    - *Meta data (inventory) update*:
+        Meta data (names of networks,
+        available stations and channels) is obtained using 
+        `routing_client.RoutingClient("eida-routing").get_stations() 
+        <https://docs.obspy.org/packages/autogen/obspy.clients.fdsn.routing.routing_client.RoutingClient.html#obspy.clients.fdsn.routing.routing_client.RoutingClient/>`_
+        from `obspy.clients.fdsn <https://docs.obspy.org/packages/obspy.clients.fdsn.html#module-obspy.clients.fdsn/>`_
+        We ask regularly (``maxcacheage``) for all meta data at channel level 
+        (i.e. network, station
+        and channel names). The inventory is stored as ``chanlist_cache.pickle``
+        in the output directory. This cached inventory is used until it is
+        older than `maxcacheage` seconds. Then a new inventory is requested
+        from servive.
+        Ideally, all servers contributing to EIDA
+        respond and a full inventory of all networks in EIDA is obtained.
+        This is approximately tested by checking if all reference networks
+        are present. Moreover a minimum number of ``eia_min_num_networks``
+        should be present.
+        If this is not the case, we reuse the old inventory for now, but
+        try to update the inventory from service every 
+        ``inv_update_waittime`` seconds. 
+        Please choose `inv_update_waittime` and `maxcacheage` carefully
+        since these routing requests place a significant
+        load in the servers and should not be called more often than 
+        necessary.
     """
 
     def __init__( self, eia_datapath=None, 
@@ -87,101 +185,6 @@ class EidaAvailability:
                  inv_update_waittime=3600, 
                  ignore_missing=False):
 
-        
-        """
-        Parameters
-        --------------
-        eia_datapath : str, None
-            path to output directory. In this directory results
-            are placed in a sub-directory `log` 
-        wanted_channels : tuple of str
-            channels used to create inventory. However for actual 
-            request any of available channels at a station is selected.
-            Default: ('HHZ', 'BHZ', 'EHZ', 'SHZ'),
-        eia_global_timespan_days : int [365]
-            days into the past for which data requests will be created 
-        maxcacheage : int, [5*86400]
-            age of cached inventory in seconds. If inventory file is
-            older, a new one is created from service. 
-        minreqlen : int, [60]
-            minimum length of waveform to request, in seconds
-        maxreqlen: int, [600]
-            maximum length of waveform, in seconds
-        eia_timeout : int, [60]
-            timeout in seconds for server requests, passed to
-            `RoutingClient( "eida-routing" ).get_stations()`
-        eia_min_num_networks : int [80]
-            minimum number of networks in new inventory to accept it 
-        reference_networks : list of str []
-            list of reference networks, that must be present to accept
-            the automatic inventory from service 
-        exclude_networks : list of str []
-            list of networks to exclude from selection for data request.
-            Can be e.g. non-european networks that are available through
-            the Eida-routing client; or very small or temporary networks
-        large_networks : dict
-            indicate probability for selection for specific networks.
-            E.g. set `large_networks = {'NL':0.5}` to reduce probability
-            for selecting a station from network 'NL'
-        inv_update_waittime : int [3600]
-            seconds to wait until update of inventory from service is
-            tried again after failure. 
-        ignore_missing : bool [False]
-            ignore missing reference networks when inventory is 
-            updated from service. Useful to create an initial 
-            inventory.
-
-
-        Notes
-        --------
-        - *Channels*: `wanted_channel` is only used when an inventory
-            of metadata is created by the obspy routing client. From
-            this inventory a station is selected randomly. Subsequently,
-            meta data at response level is requested again specifically
-            for the targeted station. From this new meta data, a random
-            channel is selected randomly for which data is requested.
-            In other words, even if `wanted_channels` contains only 
-            z-components, data will be requested for other components 
-            as well.
-        - *reference networks*: These should be large networks, which
-            are representative for different servers. If one of these
-            networks is missing in the inventory after update from
-            service, the cached inventory is used, unless 
-            `ignore_missing=True`. Most likely the
-            server which provides this network was not available to
-            the routing client at the time of request. Assuming that
-            the old inventory is more complete, it is used until a
-            successfull update yields all reference networks.
-            This may however be problematic at the beginning when no
-            cached inventory is available. For this purpose, use
-            `ignore_missing=True`
-        - *large networks*: By default, all networks have equal chance
-            of 1 to be selected for a data request. However, this may 
-            lead to overrepresentation of very large networks in the
-            statistics. A common setting might be `{'NL': 0.5}`.
-        - *Meta data (inventory) update*: Meta data (names of networks,
-            available stations and channels) is obtained using 
-            [routing_client.RoutingClient("eida-routing").get_stations()`](https://docs.obspy.org/packages/autogen/obspy.clients.fdsn.routing.routing_client.RoutingClient.html#obspy.clients.fdsn.routing.routing_client.RoutingClient)
-            from [`obspy.clients.fdsn`](https://docs.obspy.org/packages/obspy.clients.fdsn.html#module-obspy.clients.fdsn)
-            We ask regularly (`maxcacheage`) for all meta data at channel level 
-            (i.e. network, station
-            and channel names). The inventory is stored as `chanlist_cache.pickle`
-            in the output directory. This cached inventory is used until it is
-            older than `maxcacheage` seconds. Then a new inventory is requested
-            from servive.
-            Ideally, all servers contributing to EIDA
-            respond and a full inventory of all networks in EIDA is obtained.
-            This is approximately tested by checking if all reference networks
-            are present. Moreover a minimum number of `eia_min_num_networks`
-            should be present.
-            If this is not the case, we reuse the old inventory for now, but
-            try to update the inventory from service every 
-            `inv_update_waittime` seconds. 
-            Please choose `inv_update_waittime` and `maxcacheage` carefully
-            since these routing requests place a significant
-            load in the servers and should not be called more often than 
-            necessary.
-        """
 
         self.logger = logging.getLogger(module_logger.name+'.EidaAvailability')
         self.logger.setLevel(logging.DEBUG)
@@ -202,18 +205,6 @@ class EidaAvailability:
         self.exclude_networks = exclude_networks
         self.large_networks = large_networks
 
-        # logger.debug('cwd %s' % os.getcwd())
-        # if isinstance(eia_tmp_path, str):
-        #     self.eia_tmp_path = eia_tmp_path
-        # else:
-        #     self.eia_tmp_path = os.getcwd()
-        # if isinstance(eia_datapath, str):
-        #     self.eia_datapath = eia_datapath
-        # else:
-        #     self.eia_datapath = os.getcwd()
-
-        # self.eia_tmp_path = self._check_path(eia_tmp_path, 
-        #                                     'eia_tmp_path')
         self.eia_datapath = self._check_path(eia_datapath,
                                             'eia_datapath')
         
@@ -232,22 +223,20 @@ class EidaAvailability:
         """
         Manage path to results.
 
-        If `pname` is `None`, results are written to
-        current working directory.
-        If `pname` is string, it should be a valid path to 
-        a directory. We check for existence of this directory
+        Parameters
+        --------------
+        pname : str
+            If ``pname`` is `None`, results are written to
+            current working directory.
+            If ``pname`` is string, it should be a valid path to 
+            a directory. 
+        varname : str
+            Explanatory text, passed to error and log messages.
+
+
+        We check for existence of this directory
         and create new one if absent. Expands users and variables
         in path.
-        
-
-        Parameters
-        ------------
-        pname : str or None
-            path to directory where results are stored. If None, 
-            current working directory is used.
-        varname : str
-            Provide name of variable for a meaningful logger
-            message
         """
         if not isinstance(pname, str) and pname is not None:
             pname = os.getcwd()
@@ -269,15 +258,6 @@ class EidaAvailability:
 
         return pname
 
-    
-    # def _check_datapath( self ):
-    #     self.logger.debug('Checking for path %s' % self.eia_datapath)
-    #     if not os.path.exists(self.eia_datapath):
-    #         os.makedirs( self.eia_datapath )
-    #         self.logger.info('Created directory %s for results' % self.eia_datapath)
-    #     else:
-    #         self.logger.debug('Results are stored in %s' % self.eia_datapath)
-
 
     def _get_inventory_from_service( self ):
         """
@@ -286,13 +266,9 @@ class EidaAvailability:
         Requests a full inventory of all available networks,
         stations, channels in EIDA.
 
-        Returns
-        -------------
-        obspy inventory or None
-
         Calls:
 
-        ..code-block::python
+        .. code-block:: python
         
             slist = RoutingClient( "eida-routing" ).get_stations( 
                 level='channel',
@@ -300,13 +276,19 @@ class EidaAvailability:
                 starttime=UTCDateTime()-86400*eia_global_timespan_days, 
                 endtime=UTCDateTime(),
                 timeout=self.eia_timeout, includerestricted=False )
+
+
+        Returns
+        -------------
+        obspy inventory or None
+
         
-        If total number of networks in `slist` 
-        is > `eia_min_num_networks` and no networks from 
-        `reference_networks` are missing, the inventory is stored as
-        pickle `'chanlist_cache.pickle'` to be used by 
-        `_get_inventory_from_cache()`.
-        Returns `None` if any of the above fails.
+        If total number of networks in ``slist`` 
+        is > ``eia_min_num_networks`` and no networks from 
+        ``reference_networks`` are missing, the inventory is stored as
+        pickle ``'chanlist_cache.pickle'`` to be used by 
+        ``_get_inventory_from_cache()``.
+        Returns ``None`` if any of the above fails.
         """
         try:
             self.logger.info('updating inventory from service')
@@ -338,11 +320,11 @@ class EidaAvailability:
     def _get_inventory_from_cache( self, overrideage=False ):
         """
         Read station inventory from cached pickle 
-        `self..slist_cache`.
+        ``self.slist_cache``.
         
-        Returns `None` if 
+        Returns ``None`` if 
         - no cached pickle file is found or
-        - if file is too old and `overrideage=False`(default)
+        - if file is too old and ``overrideage=False``(default)
         Else inventory is read from file.
         """
         if not os.path.exists(self.slist_cache):
@@ -388,7 +370,7 @@ class EidaAvailability:
     
     def _servers_missing( self, inv ):
         """
-        Check inventory `inv` for reference networks.
+        Check inventory ``inv`` for reference networks.
         
         reference networks = main network of each server.
         """
@@ -403,7 +385,7 @@ class EidaAvailability:
 
     def number_of_networks( self, inv ):
         """
-        Get number of networks in inventory `inv`.
+        Get number of networks in inventory ``inv``.
         """
         return len(set(inv.get_contents()['networks']))
     
@@ -414,8 +396,8 @@ class EidaAvailability:
         
         Notes
         -------
-        - Calls `get_inventory()`
-        - Uses `self.large_networks()`
+        - Calls ``get_inventory()``
+        - Uses ``self.large_networks()``
         """
         slist = self.get_inventory()
         stalist = list( set(slist.get_contents()['stations']) )
@@ -476,7 +458,7 @@ class EidaAvailability:
         Parameters
         ----------------
         netsta : str
-            network and station as 'net.sta'
+            network and station as `net.sta`
         reqspan : list-like, len=2
             start and end time for request interval
         """
@@ -531,15 +513,21 @@ class EidaAvailability:
         station, chooses an interval for the request,
         collects station meta data, randomly selects a
         channel from meta data and returns all as variables.
-        Also available as `self.requestpar`.
+        Also available as ``self.requestpar``.
 
-        Returns `None` at any point where no info is found.
+        Returns ``None`` at any point where no info is found.
+
+        Returns
+        ----------
+        selchan, stainv, reqspan or None
+
 
         Collective call of 
-        - self.select_random_station()
-        - self._get_random_request_interval()
-        - self.get_station_meta( sta, reqspan )
-        - select_random_station_channel( stainv, infotext )
+
+        - ``self.select_random_station()``
+        - ``self._get_random_request_interval()``
+        - ``self.get_station_meta( sta, reqspan )``
+        - ``select_random_station_channel( stainv, infotext )``
         """
 
         ## For constency, shouldn't these methods either all start
@@ -573,7 +561,7 @@ class EidaAvailability:
 
         Parameters
         --------------
-        Takes output of `random_request()`.
+        Takes output of ``random_request()``.
         station : 
             not used
         channel : str
@@ -646,8 +634,8 @@ class EidaAvailability:
         Write result of request into a file database.
         
         Called by 
-        - `process_request()` to store request result
-        - `get_station_meta()` 
+        - ``process_request()`` to store request result
+        - ``get_station_meta()`` 
         """
         if self.requestpar is None:
             netsta = sta
@@ -802,9 +790,6 @@ class RetryManager:
 #-------------------------------------------------------------------------------
 def run(configfile, maxage=60, ignore_missing=False):  
 
-    print("Run eida availability")
-    print("__PACKAGE__", __package__)
-    print("__NAME__", __name__)
     ## Run Check
     pcheck = DoubleProcessCheck(maxage=maxage)
     if pcheck.should_exit():

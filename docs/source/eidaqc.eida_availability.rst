@@ -5,3 +5,4 @@ eidaqc.eida\_availability module
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:

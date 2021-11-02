@@ -5,3 +5,4 @@ eidaqc.eida\_inventory module
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:

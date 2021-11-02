@@ -323,8 +323,10 @@ class EidaAvailability:
         ``self.slist_cache``.
         
         Returns ``None`` if 
+
         - no cached pickle file is found or
-        - if file is too old and ``overrideage=False``(default)
+        - if file is too old and ``overrideage=False`` (default)
+        
         Else inventory is read from file.
         """
         if not os.path.exists(self.slist_cache):

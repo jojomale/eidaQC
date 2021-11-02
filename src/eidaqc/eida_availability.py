@@ -680,11 +680,7 @@ class EidaAvailability:
                 statuscodes.error_names[self.status],rtimestr,reqlen,channel,repr(exc)) )
         fp.close()
     
-    def errmsg( self, text ):
-        timestr = datetime.datetime.now().strftime("%d-%b-%Y_%T")
-        print( "%s %s" % (timestr,text) )
-        raise DeprecationWarning('errmsg is obsolete. Replaced by global logger')
-        #logger.warning(text + 'by ERRMSG')
+    
 
 #-------------------------------------------------------------------------------
 

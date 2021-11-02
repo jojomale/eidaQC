@@ -9,41 +9,43 @@
 # 
 
 """
-Create report of Eida inventory test and Eida availability test.
+Evaluate test results and create summary report.
 
-For creation of reports, needs 'pandoc' and 'convert' (imagemagick).
-This also requires implementation specific code, see variables eia_spec_...
+Iterates through the results of Eida inventory test 
+and Eida availability test and computes summary
+statistics. These are documented in markdown
 
-Create report with:
+Requires `pandoc <https://pandoc.org//>`_
+to convert markdown reports into HTML and PDF.
+PDF conversion additionally requires a Latex 
+installation that is compatible with pandoc. 
 
-```Python
-import EidaAvailability
-ar = EidaAvailability.AvailabilityReport()
-ar.make_md_report( 'avreport.md' )
-pdfreport = ar.make_pdf_report( 'avreport.md' )
-```
+Create report with command line:
+
+.. code-block::bash
+
+    $ eida rep <configfile>
+
+
+or from script:
+
+.. code-block::python
+
+    from eida_config import EidaTestConfig
+    from eida_report import EidaTestReport
+    config = EidaTestConfig(configfile, "report")
+    etr = EidaTestReport(config)
+    etr.daily_report()
 """
 
 
 from __future__ import print_function
 from glob import glob
 import os
-import sys
-# import time
-# import signal
 import datetime
-# import pickle
 import logging
 import logging.handlers
 
-# import pkg_resources
-# print(pkg_resources.)
-# css = pkg_resources.resource_filename("eidaqc", "html_report.css")
-# print(css)
-
-# import numpy as np
-# from obspy.clients.fdsn import RoutingClient
-# from obspy import UTCDateTime
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
@@ -52,8 +54,6 @@ from obspy.core.utcdatetime import UTCDateTime
 from .eida_logger import create_logger
 from .eida_availability import EidaAvailability
 from .eida_inventory import EidaInventory
-# Temporyry workaround to get parameter settings from eida_availability
-#from .eida_parameters import *
 from . import statuscodes
 
 
@@ -69,6 +69,11 @@ eia_spec_default_cssfile = os.path.join(module_path, "html_report.css")
 class BaseReport():
     """
     Provides utilities to create a report.
+
+    Parameters
+    ------------
+    loggername : str ["BaseReport"]
+        name of logger in error messages
     """
 
     def __init__(self, loggername="BaseReport"):
@@ -89,18 +94,34 @@ class BaseReport():
 
 
     def newpage( self ):
+        """
+        Print markdown newpage command.
+        """
         self.repprint( "\n\n\\newpage\n\n" )
 
 
     def dump2mdfile(self, mdfilename, mdstr=None):
         """
-        Writes `mdstr` or `self.mdstr` to `mdfilename`.
+        Write string to file.
 
         Manages also if the file already exists and/or
-        is already open for writing. Sets `self.mdfile`
-        and `self.fp` to file handler.
+        is already open for writing. 
 
-        **`self.fp` is not closed!!!*
+        Parameters
+        -----------
+        mdfilename : str
+            output filename. Assigned to ``self.mdfile``
+        mdstr : str, None
+            content to write. Uses ``self.mdstr`` if  ``None``
+
+
+        Assigns file handler to ``self.fp``
+
+
+        Warning
+        -----------
+        **File is not closed!!!** You need to execute
+        ``self.fp.close()`` at some point. 
         """
 
         if mdstr is None:
@@ -131,10 +152,11 @@ class BaseReport():
         Parameters
         ----------------------
         mdfile : str or None
-            if None we look for self.mdfile which is set after
-            self.running dump2mdfile()
+            if ``None`` we look for ``self.mdfile`` 
+            which is set after running 
+            ``self.dump2mdfile()``
         cssfile : str or None
-            CSS-style file. If None we use the one in the package
+            CSS-style file. If ``None`` we use the one in the package
         """
         self.logger.debug("Running 'make_html_report()'")
         mdfile = self._check_mdfile(mdfile)
@@ -163,15 +185,18 @@ class BaseReport():
         """
         Convert markdown report to pdf via pandoc.
 
-        Pandoc and a valid pandoc pdf-engine and the necessary
-        latex packages must be installed. 
-        See https://pandoc.org/MANUAL.html#creating-a-pdf
+        Pandoc and a valid `pandoc pdf-engine 
+        <See https://pandoc.org/MANUAL.html#creating-a-pdf/>`_ 
+        and the necessary latex packages must be installed. 
 
         On Ubuntu you may use e.g. the texlive-latex-extra package
         (info updated 10/2021):
-            ```
+        
+        .. code-block::bash
+
             apt install texlive-latex-extra
-            ```
+        
+
         Smaller texlive versions do not ship all necessary latex
         packages.
 
@@ -179,8 +204,8 @@ class BaseReport():
         Parameters
         ---------------
         mdfile : str or None
-            if None, we use self.mdfile which is set after running
-            self.dump2mdfile()
+            if ``None``, we use ``self.mdfile`` which is set after
+            running  ``self.dump2mdfile()``
         pdfengine : str
             passed to pandoc flag --pdf-engine.
         """
@@ -211,7 +236,7 @@ class BaseReport():
         program magic. The main utility seems to be to
         trim the white frame around the figures. This
         can be achieved internally with pyplot by setting
-        `plt.savefig(...,bbox_inches="tight")`.
+        ``plt.savefig(...,bbox_inches="tight")``.
         """
         plt.savefig(outfile)
         tmpfile = os.path.join( os.path.dirname(outfile),
@@ -223,6 +248,10 @@ class BaseReport():
 
 
     def _check_mdfile(self, mdfile):
+        """
+        Return meaningful error message when
+        no file is available
+        """
         if mdfile is None: 
             if self.mdfile is None:
                 raise RuntimeError("No md-report available")
@@ -239,32 +268,38 @@ class BaseReport():
 
 class AvailabilityReport(BaseReport):
     """
-    Create statistics from Eida Availability test results.
+    Create statistics from Eida Availability test results
+    and summary text.
 
-    **Most likely, you want to call 
-    `AvailabilityReport.results2mdstr()`.**
+    **Most likely, you want to call:**
+
+    ..code-block::python
+
+        AvailabilityReport(config).results2mdstr(
+            figfilenames=["fig1.png", "fig2.png"])
     
-    It creates two matplotlib-figures
+    Parameters
+    ---------------
+    config : eidaqc.EidaTestConfig
+        a configparser object which is created
+        when reading the config file
+
+
+    The method creates two matplotlib-figures
     
-    - `AvailabilityReport.availability_map` and 
-    - `AvailabilityReport.hitplot`
+    - ``AvailabilityReport.availability_map`` and 
+    - ``AvailabilityReport.hitplot``
 
     and a text summary in Markdown available as 
-    `AvailabilityReport.mdstr` 
+    ``AvailabilityReport.mdstr`` 
 
-    `mdstr` has two open string formatters, intended to provide
-    filenames of the figures as 
-        
-        ```python
-        mdstr % (figfile1, figfile2)
-        ```
-
+    
     We assume that the availability test was run with the same
     parameters as in the config-file for the report. An object
     `eida_availability.EidaAvailability()` is created for the 
     report.
 
-    Notes
+    Note
     -------------
     - The plotting functions extract and provide vital informations
       for the statistics. A cleaner separation of functionality
@@ -318,7 +353,8 @@ class AvailabilityReport(BaseReport):
 
     
     def parse_yearfile( self, fname, okcnt, failcnt ):
-        """Parse a single file in the file database and return the sum of
+        """
+        Parse a single file in the file database and return the sum of
         evaluated status codes as well as a location.
         """
         lat = lon = None
@@ -383,7 +419,8 @@ class AvailabilityReport(BaseReport):
         return (okperc,lat,lon)
     
     def loop_files( self ):
-        """Loop all networks and stations in file database, 
+        """
+        Loop all networks and stations in file database, 
         return availability and location.
 
         Output is used for plotting
@@ -409,7 +446,8 @@ class AvailabilityReport(BaseReport):
         self.reqstat[cnt] += 1
     
     def total_number_of_stations( self ):
-        """Determine total number of stations, remove double entries and
+        """
+        Determine total number of stations, remove double entries and
         stations of excluded networks.
         """
         stalist = []
@@ -426,7 +464,9 @@ class AvailabilityReport(BaseReport):
         return (len(stalist),double_entries)
     
     def dump_netstat( self ):
-        """ Write networks status statistics in different formats. """
+        """ 
+        Write networks status statistics in different formats. 
+        """
         def print_header( skeys ):
             xkeys = ["`%s`" % k for k in skeys]
             header = '|net ' + ' '.join(["| %10s" % k for k in xkeys]) + ' |'
@@ -529,6 +569,7 @@ class AvailabilityReport(BaseReport):
             plt.show()
         return len(data)
     
+
     def makehitplot( self, outfile=None ):
         # Legacy: hitstats = self.reqstats
         fig = plt.figure( figsize=(8,6) )
@@ -546,15 +587,16 @@ class AvailabilityReport(BaseReport):
             plt.show()
 
 
-    def results2mdstr(self, figfilenames=None, 
-                        ):
+    def results2mdstr(self, figfilenames=None):
         """ 
         Create markdown formatted string from results.
 
         Parameters
         ----------------
         figfilenames: list of 2 str or None
-            filenames for the 2 figures 
+            filenames for the 2 figures.
+            If ``None`` calls ``plt.show()`` i.e.
+            figures are not saved for report.
         """
         
         if figfilenames is None:
@@ -625,6 +667,15 @@ class AvailabilityReport(BaseReport):
 class InventoryReport(BaseReport):
     """
     Evaluate and plot results of inventory test.
+
+    Parameters
+    --------------
+    config : eidaqc.EidaTestConfig
+        a configparser object which is created
+        when reading the config file
+    reference_networks : dict
+    stime : datetime, str or ``None``
+        
     """
     
     def __init__(self, config, reference_networks={}, stime=None) -> None:
@@ -655,6 +706,9 @@ class InventoryReport(BaseReport):
 
 
     def _mdstrbody(self):
+        """
+        Provide str with default information for report.
+        """
         invtest_text = "## Failure rate of inventory requests\n\n" \
             + "This section contains results of inventory test \n" \
             + "requests on network, station and channel level.\n" \
@@ -669,6 +723,9 @@ class InventoryReport(BaseReport):
 
     
     def _md_add_figure(self, figfile):
+        """
+        Create markdown formatted call of figure.
+        """
         mdfigtext = "\n![Responsiveness of all servers plotted with a " \
             +"granularity of 8h; green = 0% errors, orange = 10%, " \
             +"brown = 50%%, black = 100%%](%s){width=100%%}" % (
@@ -682,13 +739,12 @@ class InventoryReport(BaseReport):
         of report window.
 
         - Gets a list of inventory test log files which have 
-          names of form 
-         `eia_datapath/eida_inentory_test/eida_invtest_log.YYYY-MM-DD`.
+            names of form 
+            ``'eia_datapath/eida_inentory_test/eida_invtest_log.YYYY-MM-DD'``.
         - Create sublist with files for which date ending 
-          `YYYY-MM-DD` > starttime of report
-        - Latest results are in file `eida_invtest_log` without
-          date extension.
-        
+            ``YYYY-MM-DD`` > starttime of report
+        - Latest results are in file ``'eida_invtest_log'`` without
+            date extensions
         """
         files = glob(self.einv.outfile+'*')
         #print(files)
@@ -726,7 +782,6 @@ class InventoryReport(BaseReport):
             mrp = None
        
         # Process content of log files
-        ## Get 
         files = self._get_logfiles()
         self.logger.debug("Creating inventory report from files %s" %
             ", ".join( files))
@@ -877,7 +932,17 @@ class InventoryReport(BaseReport):
 
 class MetaResponsePlot:
 
-    """Create a plot with response info of all servers."""
+    """
+    Create a plot with response info of all servers.
+    
+    Called by ``InventoryReport``
+
+    Parameters
+    -----------------
+    stime : 
+    granularity : float, int
+    plotname : str
+    """
 
     def __init__( self, stime, granularity, plotname ):
         self.stime = stime   # start time of plot, end time is now
@@ -1050,11 +1115,11 @@ class EidaTestReport(BaseReport):
         Create markdown file of summary report on
         availability and inventory test.
 
-        - Runs `results2mdstr` on both reports.
-        - Runs `dump2mdfile()` on both reports.
+        - Runs ``results2mdstr()`` on both reports.
+        - Runs ``dump2mdfile()`` on both reports.
         - Adds own info string on creation time
         - names figure files as 
-            `self.reportbase_fig123.png`
+            ``'self.reportbase_fig123.png'``
         """
         
         self.logger.debug("Running 'make_md_report()'")
@@ -1088,146 +1153,10 @@ class EidaTestReport(BaseReport):
         Parameters
         -----------
         pdfengine : str
-            see BaseReport.make_pdf_report()
+            see ``BaseReport.make_pdf_report()``
         """
-        # if outpath is None:
-        #     outpath = os.getcwd()
-        # self.report_outpath = outpath
-        # repname = "eida_availability_report.md"
-        # if outpath:
-        #     frepname = os.path.join( outpath, repname )
-        # else:
-        #     frepname = repname
+
         self.make_md_report()
         self.make_pdf_report(self.repfile, pdfengine)
         self.make_html_report(self.repfile)
-        #os.remove( frepname )
 
-
-    # def make_html_report( self, mdreport=None, cssfile=None ):
-    #     if mdreport is None and self.repfile is None:
-    #         raise RuntimeError("No md-report available")
-
-    #     if mdreport is not None:    
-    #         mdreport = os.path.abspath(mdreport)
-    #     else:
-    #         mdreport = self.repfile
-
-    #     if cssfile is None:
-    #         cssfile = eia_spec_default_cssfile
-    #     if not os.path.exists(cssfile):
-    #         self.logger.info( "Need existing css file for HTML output" )
-    #         self.logger.info( "Specified file '%s' not found" % cssfile )
-    #         return
-        
-    #     # Why copy the css-file????
-    #     # if self.report_outpath:
-    #     #     os.system( "cp %s %s/" % (cssfile,self.report_outpath) )
-    #     # else:
-    #     #     os.system( "cp %s ." % cssfile )
-    #     # lcssfile = os.path.basename( cssfile )
-    #     htmlfile = os.path.splitext(mdreport)[0] + '.html'
-    #     htmltitle = "EIDA Availability Report"
-    #     shellcmd = "cd %s; pandoc -s -c %s --metadata title='%s' -o %s %s" % (
-    #         os.path.dirname(mdreport),cssfile,htmltitle,htmlfile,mdreport)
-    #     self.logger.debug( "executing shellcmd '%s' " % shellcmd )
-    #     self.logger.info( "Creating HTML file '%s'" % htmlfile )
-    #     os.system( shellcmd )
-    #     self.logger.info("Finished HTML-Report")
-    #     return htmlfile
-
-
-
-    # def repprint( self, text ):
-    #     if self.repfp is None:
-    #         print( text )
-    #     else:
-    #         self.repfp.write( "%s\n" % text )
-
-
-#   self.repprint( "\n\n## Remarks\n\n" )
-#         self.repprint( "A history of these daily reports (in pdf format)" )
-#         self.repprint( "as well as request logs on station level are available at " )
-#         self.repprint( "<ftp://www.szgrf.bgr.de/pub/EidaAvailability>," )
-#         self.repprint( "files `history_eida_availability_reports.tgz` and " )
-#         self.repprint( "`stationlogs_eida_availability.tgz`, respectively." )
-#         self.repprint( "\n\nThis report was automatically created at %s MEST using"
-#             % self.etimestr.replace('_',' ') )
-#         self.repprint( "%s.\n" % os.popen('pandoc --version').readline().strip() )
-        
-
-
-        # sday = datetime.datetime.now() - datetime.timedelta( days=30 )
-        # invtest_report = self.add_inventory_test_report(sday, figfile3 )
-        # if invtest_report:
-        #     self.newpage()
-        #     self.repprint( invtest_report )
-
-        # self.repprint( "\n\n## Remarks\n\n" )
-        # self.repprint( "A history of these daily reports (in pdf format)" )
-        # self.repprint( "as well as request logs on station level are available at " )
-        # self.repprint( "<ftp://www.szgrf.bgr.de/pub/EidaAvailability>," )
-        # self.repprint( "files `history_eida_availability_reports.tgz` and " )
-        # self.repprint( "`stationlogs_eida_availability.tgz`, respectively." )
-        # self.repprint( "\n\nThis report was automatically created at %s MEST using"
-        #     % self.etimestr.replace('_',' ') )
-        # self.repprint( "%s.\n" % os.popen('pandoc --version').readline().strip() )
-        # fp.close()
-        # self.reffp = None
-    
-
-    # def add_inventory_test_report(self, sday, respfig ):
-    #     """
-    #     Retrieve statistics on the EIDA inventory test and include it
-    #     in the report. 
-    #     """
-    #     fname = os.path.join(self.eia.eia_datapath, "eida_inventory_test.log")
-    #     invtest_data = ""
-    #     try:
-    #         with open(fname, 'r') as f:
-    #             for line in f.readlines():
-    #                 invtest_data += "\t"+ line.strip() + "\n"
-
-    #     except FileNotFoundError:
-    #         self.logger.warning("Could not find results of inventory test. Looking for %s" 
-    #                     % fname)
-    #         invtest_text = "## Failure rate of inventory requests\n\n" \
-    #                         + "No inventory test results found."
-    #         return invtest_text
-    #     except:
-    #         raise
-
-
-    #         # self.logger.debug("invtest content %s" % invtest_data)
-    #     ## I think this whole section is not necessary 
-    #     # if len(invtest_data) < 10:
-    #     #     # Should not happen, something with the parsing went wrong.
-    #     #     self.logger.warning( "*** Could not parse inventory test logfile. ***" )
-    #     #     if os.path.exists(logfilename):
-    #     #         # Why would we want to remove this file?
-    #     #         #os.remove( logfilename )
-    #     #         #self.logger.debug("Removing inventory test results in %s" % logfilename)
-    #     #         self.logger.debug("Inventory test result exist but are damaged")
-    #     #     else:
-    #     #         self.logger.warning("No results of inventory test found. Looking for %s" 
-    #     #                 % logfilename)
-    #     #     return None
-    #     invtest_text = "## Failure rate of inventory requests\n\n" \
-    #         + "This section contains results of inventory test \n" \
-    #         + "requests on network, station and channel level.\n" \
-    #         + "A few times per hour all servers get direct\n" \
-    #         + "metadata requests followed by a metadata request\n" \
-    #         + "using the routing client of obspy. It is checked\n" \
-    #         + "whether all servers respond to the direct requests\n" \
-    #         + "and whether all servers contribute to the routed\n" \
-    #         + "request. The following results refer to tests carried\n" \
-    #         + "out since %s.\n\n" % sday.strftime("%d-%b-%Y %T")
-    #     respfigtext = "\n![Responsiveness of all servers plotted with a " \
-    #         +"granularity of 8h; green = 0% errors, orange = 10%, " \
-    #         +"brown = 50%%, black = 100%%](%s){width=100%%}" % (
-    #         os.path.basename(respfig))
-
-    #     ## Why is the logfile removed
-    #     #if os.path.exists(logfilename):
-    #     #    os.remove( logfilename )
-    #     return invtest_text+invtest_data+respfigtext

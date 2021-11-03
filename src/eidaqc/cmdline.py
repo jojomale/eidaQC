@@ -85,6 +85,9 @@ def main():
         else:
             outfile = None
         create_default_configfile(outfile)
+    else:
+        print("Unknown command")
+        print(__doc__)
     print('Finish')
 
 if __name__ == "__main__":

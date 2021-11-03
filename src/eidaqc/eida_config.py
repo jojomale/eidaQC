@@ -173,11 +173,9 @@ class EidaTestConfig():
         params = {
             'wanted_channels': self._split_ignoring_whitespace(
                                 sec.get("wanted_channels")),
-            'reference_networks': self._split_ignoring_whitespace(
-                                sec.get("reference_networks")),
+            'reference_networks': list(self.get_networks_servers.keys()),
             'exclude_networks': self._split_ignoring_whitespace(
                             sec.get("exclude_networks")),
-            #'non_european': self._split_ignoring_whitespace(sec.get("non_european")),
         }
         return params
 
@@ -381,10 +379,10 @@ def create_default_configfile(outfile=None):
     section = "NETWORKS"
     config[section] = {}
     config[section]["wanted_channels"] = ", ".join(wanted_channels)
-    config[section]['# representiative networks to check whether all servers' + 
-        'responded to channel level full' +
-        'EIDA metadata request\nreference_networks'] = ", ".join(
-                server_reference_networks.keys())
+    # config[section]['# representiative networks to check whether all servers' + 
+    #     'responded to channel level full' +
+    #     'EIDA metadata request\nreference_networks'] = ", ".join(
+    #             server_reference_networks.keys())
     config[section]['# networks exclude from testing, e.g. temporary or non-european networks'+
         '\nexclude_networks'] = ", ".join(exclude_networks)
     #config[section]['non_european'] = ", ".join(not_european)

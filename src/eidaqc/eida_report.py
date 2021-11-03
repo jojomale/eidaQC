@@ -52,14 +52,18 @@ import logging
 import logging.handlers
 
 import matplotlib.pyplot as plt
-import cartopy.crs as ccrs
-import cartopy.feature as cfeature
 from obspy.core.utcdatetime import UTCDateTime
 
 from .eida_logger import create_logger
 from .eida_availability import EidaAvailability
 from .eida_inventory import EidaInventory
 from . import statuscodes
+
+try:
+    import cartopy.crs as ccrs
+    import cartopy.feature as cfeature
+except ModuleNotFoundError:
+    raise UserWarning("Cartopy not found!")
 
 
 # Create the global logger

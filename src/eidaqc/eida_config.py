@@ -127,7 +127,8 @@ class EidaTestConfig():
             'rotate_log_at': sec.get("rotate_log_at"),
             'rotate_log_at_time': self.get_time(
                         sec.get("rotate_log_at_time")),
-            'inv_log_bckp_count': sec.getint("inv_log_bckp_count")
+            'inv_log_bckp_count': sec.getint("inv_log_bckp_count"),
+            'granularity': sec.getint("granularity")
         }
         params.update(self.get_networks())        
         params.update({'starttime': self.get_time(sec.get("starttime"), 
@@ -162,7 +163,8 @@ class EidaTestConfig():
             'eia_cssfile': sec.get('eia_cssfile'),
             'inv_rep_timespan_days' : sec.getint("inv_rep_timespan_days"),
             'reportbase' : os.path.splitext(
-                        expandpath(sec.get("reportfile")))[0]
+                        expandpath(sec.get("reportfile")))[0],
+            'granularity' : sec.getint('granularity')
         }
         return params
 
@@ -341,6 +343,7 @@ invpar = {
 inv_update_waittime = 3600
 inv_rep_timespan_days = 14  # Timespan in days before now for which inventory test is evaluated
 reportfile = "EidaTest_report.md"
+granularity = 8  # hours over which inventory results are averaged
 
 # Inventory test log file settings
 # We use only 'midnight' and 'W0-6'
@@ -457,6 +460,8 @@ def create_default_configfile(outfile=None):
                     "\ninv_rep_timespan_days"] = str(inv_rep_timespan_days)
     config[section]["# Path and name of report file" +
                     "\nreportfile"] = reportfile
+    config[section]["# hours over which inventory results are averaged" +
+                    '\ngranularity'] = str(granularity)
 
     with open(os.path.join(os.getcwd(), outfile), 'w') as cfile:
         config.write(cfile)

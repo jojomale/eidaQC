@@ -35,6 +35,11 @@ or from script:
     from eida_report import EidaTestReport
     config = EidaTestConfig(configfile, "report")
     etr = EidaTestReport(config)
+    etr.make_md_report()
+    etr.make_pdf_report(self.repfile, pdfengine)
+    etr.make_html_report(self.repfile)
+    
+    # or all three previous commands at once with
     etr.daily_report()
 """
 
@@ -680,7 +685,7 @@ class InventoryReport(BaseReport):
         
     """
     
-    def __init__(self, config, reference_networks={}, stime=None) -> None:
+    def __init__(self, config, stime=None) -> None:
         
         super().__init__("InventoryReport")
         self.logger.info("Creating InventoryReport")
@@ -689,14 +694,15 @@ class InventoryReport(BaseReport):
                             **config.get_invtest_dict())
 
         self.fig = None
-        self.reference_networks = reference_networks
+        self.reference_networks = config.get_networks_servers(),
         if isinstance(stime, str):
             self.stime = self.parse_time(stime)
         else:
             self.stime = self.etime - datetime.timedelta(
                     days=config.report["inv_rep_timespan_days"])
-
+    
         self.mdstr = self._mdstrbody()
+        self.granularity = config.report["granularity"]
 
         self.roclifailures = 0
         self.noerrorcnt = 0
@@ -779,7 +785,7 @@ class InventoryReport(BaseReport):
         failedlist = []
 
         if self.stime and respplot:
-            mrp = MetaResponsePlot( self.stime, 8, respplot )
+            mrp = MetaResponsePlot( self.stime, self.granularity, respplot )
         else:
             mrp = None
        
@@ -1087,10 +1093,7 @@ class EidaTestReport(BaseReport):
         self.repfile = self.reportbase + ".md"
 
         self.logger.debug("filebase for output %s" % self.reportbase)
-        self.inventory_report = InventoryReport(config,
-                    config.get_networks_servers(),
-                    #_stime  
-                     )
+        self.inventory_report = InventoryReport(config,)
         self.availability_report = AvailabilityReport(config)
         
 

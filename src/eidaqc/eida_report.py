@@ -22,14 +22,14 @@ installation that is compatible with pandoc.
 
 Create report with command line:
 
-.. code-block::bash
+.. code-block:: bash
 
     $ eida rep <configfile>
 
 
 or from script:
 
-.. code-block::python
+.. code-block:: python
 
     from eida_config import EidaTestConfig
     from eida_report import EidaTestReport
@@ -192,7 +192,7 @@ class BaseReport():
         On Ubuntu you may use e.g. the texlive-latex-extra package
         (info updated 10/2021):
         
-        .. code-block::bash
+        .. code-block:: bash
 
             apt install texlive-latex-extra
         
@@ -273,11 +273,12 @@ class AvailabilityReport(BaseReport):
 
     **Most likely, you want to call:**
 
-    ..code-block::python
+    .. code-block:: python
 
         AvailabilityReport(config).results2mdstr(
             figfilenames=["fig1.png", "fig2.png"])
     
+
     Parameters
     ---------------
     config : eidaqc.EidaTestConfig
@@ -510,7 +511,8 @@ class AvailabilityReport(BaseReport):
         mapgeo : dict
             same as self.mapgeometry
 
-        Comments (5.10.21)
+
+        Notes
         ------------------
         - I don't think we need to call scatterplot twice.
             If data is sorted the plot order should be the same
@@ -739,12 +741,12 @@ class InventoryReport(BaseReport):
         of report window.
 
         - Gets a list of inventory test log files which have 
-            names of form 
-            ``'eia_datapath/eida_inentory_test/eida_invtest_log.YYYY-MM-DD'``.
+          names of form 
+          ``'eia_datapath/eida_inentory_test/eida_invtest_log.YYYY-MM-DD'``.
         - Create sublist with files for which date ending 
-            ``YYYY-MM-DD`` > starttime of report
+          ``YYYY-MM-DD`` > starttime of report
         - Latest results are in file ``'eida_invtest_log'`` without
-            date extensions
+          date extensions
         """
         files = glob(self.einv.outfile+'*')
         #print(files)
@@ -1118,8 +1120,7 @@ class EidaTestReport(BaseReport):
         - Runs ``results2mdstr()`` on both reports.
         - Runs ``dump2mdfile()`` on both reports.
         - Adds own info string on creation time
-        - names figure files as 
-            ``'self.reportbase_fig123.png'``
+        - names figure files as ``'self.reportbase_fig123.png'``
         """
         
         self.logger.debug("Running 'make_md_report()'")

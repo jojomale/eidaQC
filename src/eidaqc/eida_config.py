@@ -123,7 +123,7 @@ class EidaTestConfig():
             'timeout': sec.getint("timeout"),
             # 'eida_servers': self._split_ignoring_whitespace(
             #                 sec.get("eida_servers")),
-            'endtime': self.get_time(sec.get("endtime")),
+            'endtime': self.get_datetime(sec.get("endtime")),
             'rotate_log_at': sec.get("rotate_log_at"),
             'rotate_log_at_time': self.get_time(
                         sec.get("rotate_log_at_time")),
@@ -131,7 +131,7 @@ class EidaTestConfig():
             'granularity': sec.getint("granularity")
         }
         params.update(self.get_networks())        
-        params.update({'starttime': self.get_time(sec.get("starttime"), 
+        params.update({'starttime': self.get_datetime(sec.get("starttime"), 
                                                     params["endtime"]),})        
         params.update({"ref_networks_servers": 
                         self.get_networks_servers()})
@@ -173,7 +173,7 @@ class EidaTestConfig():
         params = {
             'wanted_channels': self._split_ignoring_whitespace(
                                 sec.get("wanted_channels")),
-            'reference_networks': list(self.get_networks_servers.keys()),
+            'reference_networks': list(self.get_networks_servers().keys()),
             'exclude_networks': self._split_ignoring_whitespace(
                             sec.get("exclude_networks")),
         }
@@ -185,7 +185,7 @@ class EidaTestConfig():
         return {k.upper(): v for k,v in p.items()}
 
 
-    def get_time(self, t, t0=None):
+    def get_datetime(self, t, t0=None):
         """
         Convert time string into UTCDateTime.
 
@@ -203,7 +203,7 @@ class EidaTestConfig():
         else:
             try:
                 return UTCDateTime(t)
-            except TypeError as err:
+            except (TypeError, ValueError) as err:
                 err("Probably a datetime string was not "+ 
                     "formatted correctly in configfile")
             except:
@@ -214,6 +214,16 @@ class EidaTestConfig():
         else:
             raise RuntimeError("Need time as UTCDateTime")
         
+
+    def get_time(self, t, msg=""):
+        try:
+            return UTCDateTime.strptime(t, "%H:%M:%S")
+        except ValueError:
+            raise ValueError(
+                "time data '01:00' of '%s' does not match format '%H:%M:%S'" % 
+                msg)
+        
+
 
     def get_avtest_dict(self):
         params = {k: v for k, v in self.paths.items()}

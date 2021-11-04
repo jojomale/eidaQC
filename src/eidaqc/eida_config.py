@@ -1,3 +1,56 @@
+"""
+Manage configuration of Eida Network Tests.
+
+
+Parameters for the tests and report are best set
+via the configuration file. We use the `configparser 
+<https://docs.python.org/3/library/configparser.html/>`_
+module to do this.
+
+This module converts the parameters in the config-file
+into the right data formats, such as int, float, dicts
+or datetime, which are then retrievable through the
+``EidaTestConfig`` class. The parameters are bundled
+by task as dictionary, which are set as attributes.
+Three different tasks can be specified:
+
+- availability test 
+    ``which='av'``, attribute ``EidaTestConfig.avtest``
+- inventory test 
+    ``which='inv'``, attribute ``EidaTestConfig.invtest``
+- report 
+    ``which='rep'``, attribute ``EidaTestConfig.report``
+
+If ``which=None`` all three attributes are set. 
+The dictionaries ``EidaTestConfig.avtest`` and 
+``EidaTestConfig.invtest`` can be used to instantiate
+the availability and inventory test class, respectively.
+The report classes take only the config-class.
+
+To create a template file in current working directory 
+use command line:
+
+.. code-block:: console
+    
+    eida templ
+    
+This should create a file ``default_config.ini``.
+If you want a different location and name, use:
+
+.. code-block:: console
+    
+    eida templ <path/to/file>
+
+
+Alternatively, you can call 
+``eidaqc.eida_config.create_default_configfile()`` in 
+a Python script.
+
+In addition to the config-file, the CSS-file for the
+HTML report is provided. Look for ``'default_html_template.css'``
+"""
+
+
 import configparser
 import logging
 import os
@@ -13,23 +66,7 @@ from obspy.core.utcdatetime import UTCDateTime
 from .eida_logger import create_logger
 from . import eida_logger
 
-"""
-Manage configuration of Eida Network Tests.
 
-
-To create template file in current working directory 
-use command line:
-
-    ```
-    python -m eidaqc.eida_config eidaqc/eida_config.py
-    ```
-
-or call `create_default_configfile()` in Python script.
-
-- Maybe this module could also manage verifying and
-  initializing files and directories
-- 
-"""
 
 # Initialize logger
 logger = create_logger()
@@ -38,6 +75,38 @@ module_logger.setLevel(logging.DEBUG)
 
 
 class EidaTestConfig():
+    """
+    Read parameters from file and prepare for use in
+    Eida tests and report.
+
+
+    Parameters
+    ---------------
+    configfile : str
+        name of config-file
+    which : 'inv', 'rep', 'av' or [None]
+        specify task. 'rep' and ``None`` read all 
+        parameters, 'inv' and 'av' only those necessary
+        for the corresponding test.
+
+
+    Attributes
+    -------------
+    avtest : dict
+        Can be used to initialize 
+        ``EidaAvailability(**config.avtest)``.
+        not set if ``which='inv'``.
+    invtest : dict
+        Can be used to initialize 
+        ``EidaInventory(**config.invtest)``.
+        not set if ``which='av'``.
+    report : dict
+        contains additional parameters for
+        creation of reports
+
+
+    """
+
     def __init__(self, configfile, which=None):
         
         configfile = expandpath(configfile)
@@ -52,8 +121,6 @@ class EidaTestConfig():
 
                     
         self.config = configparser.ConfigParser()
-
-
         self.config.read(configfile)
         # print(['{}:{}'.format(k, str(v)) for k, v in 
         #         self.config.items()])
@@ -79,7 +146,7 @@ class EidaTestConfig():
         """
         Retrieve logger-related settings.
 
-        Checks if `eia_tmp_path` exists. If it doesn't
+        Checks if ``'eia_tmp_path'`` exists. If it doesn't
         uses current working dir instead.
         """
 
@@ -192,9 +259,9 @@ class EidaTestConfig():
 
         - if t is "now", current time is returned
         - if t is a string that can be handled by UTCDateTime,
-            returns given datetime
+          returns given datetime
         - if t is numeric and t0 as UTCDateTime is present,
-            returns t0 - t
+          returns t_0 - t
         
         """
         if t.lower() == "now":
@@ -217,6 +284,9 @@ class EidaTestConfig():
         
 
     def get_time(self, t, msg=""):
+        """
+        Convert time string HH:MM:SS into UTCDateTime
+        """
         try:
             return UTCDateTime.strptime(t, "%H:%M:%S")
         except ValueError:
@@ -244,7 +314,7 @@ class EidaTestConfig():
 
     def _split_ignoring_whitespace(self, s, sep=","):
         """
-        Split string at `sep` and remove trailing/leading
+        Split string at ``sep`` and remove trailing/leading
         whitespaces around the list elements.
         """
         return [si.strip() for si in s.split(sep)]
@@ -512,6 +582,9 @@ def create_default_configfile(outfile=None):
 
 
 def load_css_template(outfile=None):
+    """
+    Retrieve CSS-file from package
+    """
     if outfile is None:
         outfile = os.path.join(os.getcwd(), 
                     "default_html_report.css")

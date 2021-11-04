@@ -698,7 +698,7 @@ class InventoryReport(BaseReport):
                             **config.get_invtest_dict())
 
         self.fig = None
-        self.reference_networks = config.get_networks_servers(),
+        self.reference_networks = config.get_networks_servers()
         if isinstance(stime, str):
             self.stime = self.parse_time(stime)
         else:

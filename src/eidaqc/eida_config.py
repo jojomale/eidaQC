@@ -48,7 +48,142 @@ a Python script.
 
 In addition to the config-file, the CSS-file for the
 HTML report is provided. Look for ``'default_html_template.css'``
-"""
+
+
+The config-file should look like this:
+
+.. code-block::
+    
+    [NETWORKS]
+    wanted_channels = HHZ, BHZ, EHZ, SHZ
+    # networks exclude from testing, e.g. temporary or non-european networks
+    exclude_networks = 1N, 1T, 3C, 4H, 5M, 7A, 8C, 9C, 9H, XK, XN, XT, XW, YW, YZ, Z3, ZF, ZJ, ZM, ZS, AI, AW, CK, CN, CX, GL, IO, IQ, KC, KP, MQ, NA, ND, NU, PF, WC, WI
+
+    [PROBABILITIES]
+    nl = 0.5
+
+    [SERVER_REFERENCE_NETWORKS]
+    nl = ODC
+    ge = GFZ
+    fr = RESIF
+    ch = ETH
+    gr = BGR
+    bw = LMU
+    ro = NIEP
+    ko = KOERI
+    hl = NOA
+    no = http://eida.geo.uib.no
+    ca = ICGC
+    iv = INGV
+
+    [ERROR LOGGING]
+    loglevel_console = DEBUG
+    loglevel_file = DEBUG
+    # unit of logfile rotation - choose from
+    # s (seconds), m (minutes), h (hours), d (days), midnight)
+    log_timeunit = h
+    # interval to rotate logfile for units s, m, h, d
+    log_interval = 1
+    # number of logfiles to be kept before oldest one gets deleted
+    log_backupcount = 2
+
+    [PATHS]
+    # location of temporary files (error logs, etc)
+    eia_tmp_path = /tmp
+    # location to store results
+    eia_datapath = /home/lehr/svn/EidaQualityCheck/trunk/eidaQC/testing/EidaTest_results
+
+    [Availability Test]
+    # select waveforms within the last days
+    eia_global_timespan_days = 365
+    # timeout for retrieving station metadata.
+    eia_timeout = 60
+    # minimum number of networks to get data before replacing cached inventory.
+    eia_min_num_networks = 80
+    # age of cached inventory file in seconds. if file is older, inventory is updated
+    maxcacheage = 432000
+    # minimum length of data for test request, in seconds
+    minreqlen = 60
+    # maximum length of data for test request, in seconds
+    maxreqlen = 600
+    # time to wait until next try if inventory update frm servers failed, in seconds
+    inv_update_waittime = 3600
+
+    [Inventory test]
+    timeout = 240
+    # endtime of request interval
+    endtime = now
+    # starttime or interval for request, counted backwards from t1 in seconds
+    starttime = 31536000
+    # rotate result file at 'midnight' (after 24h) or weekday 'w0-6' (0=monday)
+    rotate_log_at = midnight
+    # time at which rollover occurs (in utc) 
+    rotate_log_at_time = 00:00:00
+    # number of files to keep from the past
+    inv_log_bckp_count = 12
+
+    [Report]
+    # number of days over which to request statistics for report.
+    eia_reqstats_timespan_days = 92
+    # css-style file for html report
+    eia_cssfile = /home/lehr/svn/EidaQualityCheck/trunk/eidaQC/testing/default_html_template.css
+    # timespan in days before now for which inventory test is evaluated.
+    inv_rep_timespan_days = 14
+    # path and name of report file
+    reportfile = EidaTest_report.md
+    # hours over which inventory results are averaged
+    granularity = 8
+
+
+- NETWORKS
+    - ``wanted_channels``: look for these channels when retrieving
+      inventory. Therefore, the component ('Z') is not so 
+      important. For the availability test, channels/components are
+      drawn from the full inventory of the selected station. Thus other
+      channels than those given here might occur
+    - ``exclude_networks``: list of networks, that should be removed
+      from the inventory and thus ignored for the availability test.
+      Can be e.g. non-european, temporary or very small networks.
+- PROBABILITIES
+    list networks for which reduced probability should be used
+    during the random station selection of the availability test.
+    List as ``Network-ID = probability``
+- SERVER_REFERENCE_NETWORKS
+    list of network-server-pairs (``network-id = server-id``)
+    For each server, give a representative network, which is 
+    mainly delivered through that server.
+- ERROR LOGGING
+    how to deal with the log and error messages. Configures the 
+    `logging <https://docs.python.org/3/library/logging.html/>`_ 
+    module. Note that this does **not** handle the test results. 
+
+    - ``loglevel_console``: threat level for output on console,
+      messages at lower level will be ignored. Can be DEBUG,
+      INFO, WARNING, ERROR, CRITICAL. DEBUG is most verbose.
+    - ``loglevel_file``: same as above, but for messages written
+      sent to temporary file.
+    The following parameters handle the rotation of logging files.
+    We use a `TimedRotatingFileHandler 
+    <https://docs.python.org/3/library/logging.handlers.html#logging.handlers.TimedRotatingFileHandler/>`_
+    A new log-file is started every ``log_interval`` ``log_timeunit``
+    
+    - ``log_timeunit``: unit of ``log_interval``. Can be 
+      ``'S'`` econds, ``'M'`` inutes, ``'H'`` ours or ``'D'`` ays 
+    - ``log_interval``: int, number of time units
+    - ``log_backupcount``: int, keep so many logfiles before deleting
+      oldest. A datetime string is appended to the file name.
+- PATHS
+    - ``eia_tmp_path``: location for temporary files, e.g. 
+      the log files
+    - ``eia_datapath``: directory where test results and report
+      files are written to.
+- Availability Test
+    see comments
+- Inventory test
+    see comments
+- Report
+    see comments
+""" 
 
 
 import configparser
@@ -431,6 +566,7 @@ rotate_log_at_time = "00:00:00"
 inv_log_bckp_count = 12
 
 
+
 def create_default_configfile(outfile=None):
     """
     Create a config file from default variables.
@@ -546,38 +682,6 @@ def create_default_configfile(outfile=None):
         config.write(cfile)
     module_logger.info('Creating default config-file in %s' %
                     cfile.name)
-
-
-
-# def load_default_config(outfile=None):
-#     """
-#     Load config template.
-#     """
-#     if outfile is None:
-#         outfile = os.path.join(os.getcwd(), "default_config.ini")
-#     elif isinstance(outfile, str):
-#         outfile = expandpath(outfile)
-#     else:
-#         raise RuntimeError("Give filename as str or set to None")
-
-#     module_logger.info("Config template is %s" % outfile)
-#     config = configparser.ConfigParser()
-
-#     config.read(str(resources.files("eidaqc").joinpath("config.ini")))
-
-#     # Set paths
-#     section = "PATHS"
-#     config[section]["# location of temporary files (error logs, etc)" + 
-#                 "\neia_tmp_path"] = eia_tmp_path
-#     config[section]["# location to store results" +
-#                 "\neia_datapath"] = eia_datapath
-
-#     section = "Report"
-#     config[section]["# CSS-style file for html report" + 
-#                 "\neia_cssfile"] = eia_spec_default_cssfile
-
-#     with open(outfile, 'w') as cfile:
-#         config.write(cfile)
 
 
 

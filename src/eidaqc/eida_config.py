@@ -453,7 +453,7 @@ def create_default_configfile(outfile=None):
                     # "\neida_servers"] = ", ".join(server_reference_networks.values())#eida_servers)
     config[section]["# Rotate result file at 'midnight' (after 24h) or weekday 'W0-6' (0=Monday)" + 
                     "\nrotate_log_at"] = str(rotate_log_at)
-    config[section]["# Time at which rollover occurs (in UTC) " + 
+    config[section]["# Time at which rollover occurs (local time) " + 
                     "\nrotate_log_at_time"] = str(rotate_log_at_time)
     config[section]["# number of files to keep from the past" + 
                     "\ninv_log_bckp_count"] = str(inv_log_bckp_count)

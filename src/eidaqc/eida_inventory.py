@@ -281,7 +281,7 @@ class EidaInventory():
 
 
 def run(reqlevel, configfile):
-    config = eida_config.EidaTestConfig(configfile)
+    config = eida_config.EidaTestConfig(configfile, which="inv")
     configure_handlers(logger, **config.loghandlers)
     module_logger.debug('Running eida_inventory.run()')
     stamp = time.time()

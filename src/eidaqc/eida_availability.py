@@ -829,7 +829,7 @@ def run(configfile, maxage=60, ignore_missing=False):
         pcheck.logger.debug('Another instance is running')
         exit()
     
-    config = eida_config.EidaTestConfig(configfile)
+    config = eida_config.EidaTestConfig(configfile, which='av')
     configure_handlers(logger, **config.loghandlers)
     module_logger.info(10*'-'+'Starting new request'+10*'-')
     

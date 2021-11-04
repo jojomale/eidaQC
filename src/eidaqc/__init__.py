@@ -34,7 +34,31 @@ eidaqc itself will be installed via pip. However conda makes
 the installation of the required packages a lot easier,
 especially for cartopy.
 
-You may want to create a virtual environment first:
+
+Installing conda:
+
+.. code-block:: console
+    
+    mkdir -p ~/miniconda3
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
+    bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
+    rm -rf ~/miniconda3/miniconda.sh
+    ~/miniconda3/bin/conda init bash
+    source ~/.bashrc
+
+
+After ``source`` your command line should change to:
+
+.. code-block:: console
+
+    (base) me@mymachine:~$ 
+
+
+``(base)`` indicates that you are in the base environement
+of conda.
+
+
+You may want to create a new virtual environment for eidaqc:
 
 .. code-block:: console
 
@@ -44,7 +68,8 @@ You may want to create a virtual environment first:
 
 .. code-block:: console
 
-    $ conda install -c conda-forge cartopy obspy matplotlib numpy
+    $ conda install -c conda-forge numpy matplotlib obspy cartopy
+
 
 
 
@@ -60,6 +85,57 @@ manual. Obspy wasn't tested so far.
 
 *If you can provide a working installation order please let us know.*
     
+- https://packaging.python.org/guides/installing-using-linux-tools/#installing-pip-setuptools-wheel-with-linux-package-managers
+- venv: https://docs.python.org/3/library/venv.html
+
+
+
+.. code-block:: bash
+
+    $ sudo apt install python3-venv python3-pip
+    $ python3 -m venv net/EIDAQC
+    $ source net/EIDAQC/bin/activate
+    $ pip install numpy matplotlib obspy
+    $ sudo apt install libgeos-dev
+    $ pip install shapely
+    $ pip install pyshp
+    $ sudo apt-get install proj-bin
+
+    sudo apt install python3-pip
+    pip3 install virtualenv
+    virtualenv -p /usr/bin/python3 py3
+    source py3/bin/activate
+    pip install numpy matplotlib obspy
+    sudo apt install libgeos-dev
+    pip install shapely pyshp
+    sudo apt-get install proj-bin
+    pip install pyproj
+    
+
+
+
+
+
+Virgin Ubuntu 18.04.6 LTS
+
+.. code-block:: bash
+   
+    $ sudo apt install wget software-properties-common 
+    $ sudo add-apt-repository ppa:deadsnakes/ppa 
+    $ sudo apt update
+    $ sudo apt install python3.9
+    $ # sudo apt install virtualenv
+    $ # pip3 install virtualenv
+    $ source venv/bin/activate
+
+
+
+
+
+
+
+
+
  
 
 Install eidaqc
@@ -71,13 +147,10 @@ via pip from Github:
 
     $ pip install git+https://github.com/jojomale/eidaQC.git
 
-    
 
-From source distribution:
+Afterwards the command ``eida`` should be available.    
 
-.. code-block:: console
 
-    $ pip install eidaqc-0.0.1.tar.gz
 
 
 Usage

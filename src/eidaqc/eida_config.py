@@ -126,7 +126,8 @@ class EidaTestConfig():
             'endtime': self.get_datetime(sec.get("endtime")),
             'rotate_log_at': sec.get("rotate_log_at"),
             'rotate_log_at_time': self.get_time(
-                        sec.get("rotate_log_at_time")),
+                        sec.get("rotate_log_at_time"), 
+                        "rotate_log_at_time"),
             'inv_log_bckp_count': sec.getint("inv_log_bckp_count"),
             'granularity': sec.getint("granularity")
         }

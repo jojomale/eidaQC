@@ -786,7 +786,7 @@ class RetryManager:
 
 
 #-------------------------------------------------------------------------------
-def run(configfile, maxage=60, ignore_missing=False): 
+def run(configfile, maxage=None, ignore_missing=False): 
     """
     Execute EIDA data availability test using parameters
     from ``configfile``
@@ -823,16 +823,21 @@ def run(configfile, maxage=60, ignore_missing=False):
     Only runs if no other instance is found (``DoubleProcessCheck()``)
     """ 
 
-    ## Run Check
-    pcheck = DoubleProcessCheck(maxage=maxage)
-    if pcheck.should_exit():
-        pcheck.logger.debug('Another instance is running')
-        exit()
+
     
     config = eida_config.EidaTestConfig(configfile, which='av')
     configure_handlers(logger, **config.loghandlers)
     module_logger.info(10*'-'+'Starting new request'+10*'-')
     
+    ## Run Check
+    if maxage is None:
+        maxage = config.avtest['eia_timeout']
+    pcheck = DoubleProcessCheck(maxage=maxage)
+    if pcheck.should_exit():
+        pcheck.logger.debug('Another instance is running')
+        exit()
+
+
     params = config.get_avtest_dict()
     module_logger.debug("Parameters for EidaAvailability are\n %s" % 
         "\n".join(["\t{} : {}".format(k,str(v)) for k, v in params.items()]))

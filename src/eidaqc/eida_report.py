@@ -20,6 +20,21 @@ to convert markdown reports into HTML and PDF.
 PDF conversion additionally requires a Latex 
 installation that is compatible with pandoc. 
 
+Availability test results are presented as scatterplot
+on a map with each dot representing a station.
+For a meaningful image a mapping library is required. 
+First choice is `cartopy 
+<https://scitools.org.uk/cartopy/docs/latest/index.html/>`_.
+However, on older systems and/or if you do not use conda
+`basemap <https://matplotlib.org/basemap/index.html/>`_ may be
+easier to install. Note though, that basemap is no longer 
+actively developed in favor of cartopy.
+If you have neither package installed, station coordinates
+are used as x,y in cartesian coordinates, which is obviously
+not very helpful. If you want to choose your plotting tool,
+you can get the data from ``AvailabilityReport.loop_files()``.
+
+
 Create report with command line:
 
 .. code-block:: bash
@@ -448,9 +463,12 @@ class AvailabilityReport(BaseReport):
 
         Return
         -------------
-        data : list of tuples
-            each tuple is (percentage, lat, lon) per station
-            in database
+        data : numpy.ndarray
+            shape is (n_station, 3). Columns are percentage,
+            lat, lon. One line per station in database.
+            Percentage represents the frequency of
+            failed (0%) and successful (100%) data request to
+            that station.
 
 
         Output is used for plotting

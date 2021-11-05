@@ -45,12 +45,14 @@ or from script:
 
 
 from __future__ import print_function
+# from _typeshed import NoneType
 from glob import glob
 import os
 import datetime
 import logging
 import logging.handlers
 
+import numpy as np
 import matplotlib.pyplot as plt
 from obspy.core.utcdatetime import UTCDateTime
 
@@ -59,16 +61,30 @@ from .eida_availability import EidaAvailability
 from .eida_inventory import EidaInventory
 from . import statuscodes
 
-try:
-    import cartopy.crs as ccrs
-    import cartopy.feature as cfeature
-except ModuleNotFoundError:
-    raise UserWarning("Cartopy not found!")
-
 
 # Create the global logger
 logger = create_logger()
 module_logger = logging.getLogger(logger.name+'.eida_report')
+
+
+try:
+    import cartopy.crs as ccrs
+    import cartopy.feature as cfeature
+    mapping = 'cartopy'
+    module_logger.debug("Using cartopy for mapping")
+except (ModuleNotFoundError, ImportError):
+    try: 
+        from mpl_toolkits.basemap import Basemap
+        mapping = 'basemap'
+        module_logger.debug("Using basemap for mapping")
+    except (ModuleNotFoundError, ImportError):
+        mapping = None
+        module_logger.debug("No mapping library found. " + 
+            "Using matplotlib, therefore I can not do projection " +
+            "and show geographical features.")
+
+
+
 
 # Retrieve absolute path to default css-file
 module_path = os.path.dirname(statuscodes.__file__)
@@ -318,18 +334,15 @@ class AvailabilityReport(BaseReport):
 
     # Geometry of map plot.
     mapgeometry = {
-        #'projection':  ccrs.Mercator(),
-        'lonmin':    -11.,
-        'latmin':    29.,
-        'lonmax':    50.,
-        'latmax':    71.5,
+        'projection':   'merc',
+        'llcrnrlon':    -11.,
+        'llcrnrlat':    29.,
+        'urcrnrlon':    50.,
+        'urcrnrlat':    71.5,
         'resolution':   'i',
         'lat_ts':       45.,
     }
-    mapgeometry['projection'] = ccrs.Mercator(
-            central_longitude=(mapgeometry['lonmax']-mapgeometry['lonmin'])/2,
-            min_latitude=mapgeometry['latmin'],
-            max_latitude=mapgeometry['latmax'])
+    
     # Status codes evaluated for color translation in map plot.
     okwords = ('OK',)
     failwords = ('NODATA','FRAGMENT','INCOMPL','METAFAIL','RESTFAIL')
@@ -433,6 +446,13 @@ class AvailabilityReport(BaseReport):
         Loop all networks and stations in file database, 
         return availability and location.
 
+        Return
+        -------------
+        data : list of tuples
+            each tuple is (percentage, lat, lon) per station
+            in database
+
+
         Output is used for plotting
         """
         data = []
@@ -447,6 +467,12 @@ class AvailabilityReport(BaseReport):
                 if None in (okperc,lat,lon):
                     continue
                 data.append( (okperc,lat,lon) )
+
+
+        data = np.array(data)  # Shape = (n_stations, 3)
+        
+        # Sort data by okperc (first col)
+        data = data[np.argsort(data[:,0]),:]
         return data
     
     def add_stats( self, cnt ):
@@ -510,6 +536,60 @@ class AvailabilityReport(BaseReport):
         self.repprint( "`NOSERV`   \n: station metadata request failed\n" )
         self.repprint( "`RESTFAIL` \n: removing response failed\n" )
     
+    
+    def _availplot_cartopy(self, fig, x, y, c, mapgeo=None):
+        if mapgeo is None:
+            mapgeo = self.mapgeometry    
+            mapgeo['projection'] = ccrs.Mercator(
+                central_longitude=(mapgeo['urcrnrlon']-
+                                    mapgeo['llcrnrlon'])/2,
+                min_latitude=mapgeo['llcrnrlat'],
+                max_latitude=mapgeo['urcrnrlat'])
+
+        xmap = fig.add_subplot(1,1,1,
+                    projection=mapgeo['projection'])
+        xmap.set_extent([mapgeo['llcrnrlon'], mapgeo['urcrnrlon'],
+                         mapgeo['llcrnrlat'], mapgeo['urcrnrlat']],
+                            crs=ccrs.PlateCarree())
+        xmap.add_feature(cfeature.LAND, color='#EEEEFF')
+        xmap.add_feature(cfeature.OCEAN)
+        xmap.add_feature(cfeature.COASTLINE)
+        xmap.add_feature(cfeature.BORDERS, lw=0.25, linestyle='-')
+        xmap.add_feature(cfeature.LAKES, alpha=0.5)
+        xmap.add_feature(cfeature.RIVERS, lw=0.25)    
+
+        xmap.scatter(x, y, c=c, 
+                transform=ccrs.PlateCarree(), vmin=0, vmax=100,
+                edgecolor=None, cmap='RdYlGn', 
+                s=10, zorder=6)
+        
+        return fig
+
+    
+    def _availplot_basemap(self, fig, x, y, c, mapgeo=None):
+        if mapgeo is None:
+            mapgeo = self.mapgeometry    
+            mapgeo['projection'] = 'merc'
+
+        ax = fig.add_subplots(1,1)
+        xmap = Basemap(ax=ax, **mapgeo )
+        xmap.drawcoastlines(linewidth=0.25, zorder=3)
+        xmap.drawcountries(linewidth=0.25, zorder=3)
+        xmap.fillcontinents( color='#FFFFFF', lake_color='#EEEEFF', zorder=2 )
+        xmap.drawmapboundary( fill_color='#EEFEFF' )
+
+        xv, yv = xmap( x, y )
+        xmap.scatter( xv, yv, c=c, edgecolor=None, cmap='RdYlGn', s=10,
+            zorder=5 )
+        return fig
+
+
+    def _availplot_nomap(self, fig, x,y,c):
+        ax = fig.add_subplots(1,1)
+        ax.scatter(x, y, c=c, edgecolor=None, cmap='RdYlGn', s=10,
+            zorder=5 )
+        return fig
+
 
     def makeavailplot( self, outfile=None, mapgeo=None):
         """
@@ -520,61 +600,27 @@ class AvailabilityReport(BaseReport):
         mapgeo : dict
             same as self.mapgeometry
 
-
-        Notes
-        ------------------
-        - I don't think we need to call scatterplot twice.
-            If data is sorted the plot order should be the same
         
         """
         fig = plt.figure( figsize=(14,10) )
-        if mapgeo is None:
-            mapgeo = self.mapgeometry
 
-        xmap = fig.add_subplot(1,1,1,
-                    projection=mapgeo['projection'])
-        xmap.set_extent([mapgeo['lonmin'], mapgeo['lonmax'],
-                         mapgeo['latmin'], mapgeo['latmax']],
-                         crs=ccrs.PlateCarree())
-        xmap.add_feature(cfeature.LAND, color='#EEEEFF')
-        xmap.add_feature(cfeature.OCEAN)
-        xmap.add_feature(cfeature.COASTLINE)
-        xmap.add_feature(cfeature.BORDERS, lw=0.25, linestyle='-')
-        xmap.add_feature(cfeature.LAKES, alpha=0.5)
-        xmap.add_feature(cfeature.RIVERS, lw=0.25)    
-        # xmap.drawcoastlines(linewidth=0.25, zorder=3)
-        # xmap.drawcountries(linewidth=0.25, zorder=3)
-        # xmap.fillcontinents( color='#FFFFFF', lake_color='#EEEEFF', zorder=2 )
-        # xmap.drawmapboundary( fill_color='#EEFEFF' )
-        data = self.loop_files()
-        ##cols, lats, lons = zip( *data )  # plot nice colors at last.
-        # Plot first the red dots, then overlain by other colors.
-        redcols, redlats, redlons = ([],[],[])
-        nonredcols, nonredlats, nonredlons = ([],[],[])
-        for col,lat,lon in data:
-            if col < 0.1:
-                redcols.append( col )
-                redlats.append( lat )
-                redlons.append( lon )
-            else:
-                nonredcols.append( col )
-                nonredlats.append( lat )
-                nonredlons.append( lon )
-        xmap.scatter(redlons, redlats, c=redcols, 
-                transform=ccrs.PlateCarree(), vmin=0, vmax=100,
-                edgecolor=None, cmap='RdYlGn', 
-                s=10, zorder=5)
-        xmap.scatter(nonredlons, nonredlats, c=nonredcols, 
-                transform=ccrs.PlateCarree(), vmin=0, vmax=100,
-                edgecolor=None, cmap='RdYlGn', 
-                s=10, zorder=6)
-        datestr = datetime.datetime.now().strftime("%y-%m-%d")
-        plt.title( "EIDA waveform response statistics (%s)" % datestr )
         
+        data = self.loop_files()  # returns numpy-array, shape=(n_stations, 3)
+        c, y, x = data.T
+
+        if mapping == "cartopy":
+            fig = self._availplot_cartopy(fig, x, y, c, mapgeo)
+        elif mapping == "basemap":
+            fig = self._availplot_basemap(fig, x, y, c, mapgeo)
+        else:
+            fig = self._availplot_nomap(fig, x, y, c)
+
+        datestr = datetime.datetime.now().strftime("%y%m%d")
+        fig.suptitle( "EIDA waveform response statistics (%s)" % datestr )
         self.availability_map = fig
 
         if outfile:
-            plt.savefig( outfile, format="png", bbox_inches="tight" )
+            fig.savefig( outfile, format="png", bbox_inches="tight" )
             self.logger.info("Availability map saved as %s" % outfile)
         else:
             plt.show()

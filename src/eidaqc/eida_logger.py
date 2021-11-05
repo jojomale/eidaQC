@@ -27,13 +27,13 @@ def create_logger():
     # Try to get the package name, may not work for python <3.9 versions
     try: 
         if __package__ is None and __name__ != "__main__":
-            print("Using name for logger from __name__", __name__)
+            # print("Using name for logger from __name__", __name__)
             loggername = __name__.split('.')[0]
         elif __package__ == "":
-            print("Setting loggername to eidaqc")
+            # print("Setting loggername to eidaqc")
             loggername = "eidaqc"
         else:
-            print("Using name for logger from __package__", __package__)
+            # print("Using name for logger from __package__", __package__)
             loggername = __package__
     except UnboundLocalError:
         print("Error, using ", __name__.split('.')[0])

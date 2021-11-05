@@ -66,7 +66,7 @@ from . import statuscodes
 logger = create_logger()
 module_logger = logging.getLogger(logger.name+'.eida_report')
 
-
+# Check which mapping toolbox is available
 try:
     import cartopy.crs as ccrs
     import cartopy.feature as cfeature
@@ -339,7 +339,7 @@ class AvailabilityReport(BaseReport):
         'llcrnrlat':    29.,
         'urcrnrlon':    50.,
         'urcrnrlat':    71.5,
-        'resolution':   'i',
+        'resolution':   'l',
         'lat_ts':       45.,
     }
     
@@ -571,7 +571,7 @@ class AvailabilityReport(BaseReport):
             mapgeo = self.mapgeometry    
             mapgeo['projection'] = 'merc'
 
-        ax = fig.add_subplots(1,1)
+        ax = fig.add_subplot(111)
         xmap = Basemap(ax=ax, **mapgeo )
         xmap.drawcoastlines(linewidth=0.25, zorder=3)
         xmap.drawcountries(linewidth=0.25, zorder=3)
@@ -585,7 +585,7 @@ class AvailabilityReport(BaseReport):
 
 
     def _availplot_nomap(self, fig, x,y,c):
-        ax = fig.add_subplots(1,1)
+        ax = fig.add_subplot(111)
         ax.scatter(x, y, c=c, edgecolor=None, cmap='RdYlGn', s=10,
             zorder=5 )
         return fig

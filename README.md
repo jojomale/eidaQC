@@ -1,8 +1,6 @@
 *This project is in still in development. It is usable but not*
 *all errors are handled properly*
 
-# *Known problems*
-- *Log files for inventory test are rotating but backup files are not included in report*
 
 Run tests on the [European Integrated Data Archive](http://www.orfeus-eu.org/data/eida/) for seismological data
 to check the availability of waveform data and the processing of metadata requests.
@@ -22,21 +20,24 @@ https://eidaqc.readthedocs.io/
 # Installation
 
 ## Install dependencies
--You need `pip` to install eidaqc.
+You need `pip` to install eidaqc.
 
 The following packages are required to run eidaqc:
-- Cartopy: https://scitools.org.uk/cartopy/docs/latest/installing.html
 - Obspy: https://github.com/obspy/obspy/wiki#installation
 - Numpy
 - Matplotlib
 
-Cartopy and obspy themselves depend on a number of packages 
-including numpy and matplotlib.
+Optionally, if you want your results plotted on a nice map, you should install one of these mapping libraries:
+- Cartopy: https://scitools.org.uk/cartopy/docs/latest/installing.html
+- Basemap Matplotlib Toolkit: https://matplotlib.org/basemap/
+
+
+
 
 ### Using conda
 eidaqc itself will be installed via pip. However conda makes
 the installation of the required packages a lot easier,
-notably for cartopy.
+notably for the mapping library.
 
 You may want to create a virtual environment first:
 

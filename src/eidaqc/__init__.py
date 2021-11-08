@@ -15,13 +15,13 @@ Installation
 
 Install dependencies
 --------------------------
-You need `pip` to install eidaqc.
+You need `pip <https://pip.pypa.io/en/latest//>`_ to install eidaqc.
 
 The following packages are required to run eidaqc:
-- Cartopy: https://scitools.org.uk/cartopy/docs/latest/installing.html
-- Obspy: https://github.com/obspy/obspy/wiki#installation
-- Numpy
-- Matplotlib
+
+- `Numpy <https://numpy.org/install//>`_
+- `Matplotlib <https://matplotlib.org/stable/users/installing.html/>`_
+- `Obspy <https://github.com/obspy/obspy/wiki#installation/>`_
 
 Cartopy and obspy themselves depend on a number of packages 
 including numpy and matplotlib.
@@ -97,36 +97,7 @@ manual. Obspy wasn't tested so far.
     $ source net/EIDAQC/bin/activate
     $ pip install numpy matplotlib obspy
     $ sudo apt install libgeos-dev
-    $ pip install shapely
-    $ pip install pyshp
     $ sudo apt-get install proj-bin
-
-    sudo apt install python3-pip
-    pip3 install virtualenv
-    virtualenv -p /usr/bin/python3 py3
-    source py3/bin/activate
-    pip install numpy matplotlib obspy
-    sudo apt install libgeos-dev
-    pip install shapely pyshp
-    sudo apt-get install proj-bin
-    pip install pyproj
-    
-
-
-
-
-
-Virgin Ubuntu 18.04.6 LTS
-
-.. code-block:: bash
-   
-    $ sudo apt install wget software-properties-common 
-    $ sudo add-apt-repository ppa:deadsnakes/ppa 
-    $ sudo apt update
-    $ sudo apt install python3.9
-    $ # sudo apt install virtualenv
-    $ # pip3 install virtualenv
-    $ source venv/bin/activate
 
 
 

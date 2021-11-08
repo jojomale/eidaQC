@@ -45,6 +45,7 @@ An inventory of available EIDA stations is created regularly.
 
 from __future__ import print_function
 import os
+from sys import exit
 # import sys
 import time
 import signal
@@ -705,6 +706,8 @@ class DoubleProcessCheck:
         self.pidfile = os.path.join(tempfile.gettempdir(), 'EidaAvailability.pid')
         self.logger.debug("Pid file is in %s" % self.pidfile)
         self.maxage = maxage
+        self.logger.debug("maxage is %s" % str(maxage))
+        self.logger.debug("self.maxage is %s" % str(self.maxage))
     
     def create_pidfile( self ):
         fp = open( self.pidfile, 'w' )
@@ -718,6 +721,8 @@ class DoubleProcessCheck:
         if fileage < self.maxage:
             return True
         try:
+            self.logger.debug("fileage>maxage, fileage = %s, maxage = %s" % 
+                    (str(fileage), str(self.maxage)))
             pid = int( open(self.pidfile).readline().strip() )
         except:
             os.remove( self.pidfile )
@@ -739,6 +744,7 @@ class DoubleProcessCheck:
         is created, returns False. Subsequent calls should return True.
         """
         if self.process_active():
+            self.logger.info('Another instance is running. I should exit.')
             return True
         self.create_pidfile()
         return False
@@ -786,7 +792,7 @@ class RetryManager:
 
 
 #-------------------------------------------------------------------------------
-def run(configfile, maxage=None, ignore_missing=False): 
+def run(configfile, maxage=300, ignore_missing=False): 
     """
     Execute EIDA data availability test using parameters
     from ``configfile``
@@ -806,10 +812,11 @@ def run(configfile, maxage=None, ignore_missing=False):
     configfile : str, path-like
         path and name of configuration file. Passed to
         ``eida_config``
-    maxage : int
+    maxage : int, None
         does not run if another process is found which 
         started less than ``maxage`` seconds ago.
-        Passed to ``DoubleProcessCheck()``
+        Passed to ``DoubleProcessCheck()``. If ``None``,
+        we use ``eia_timeout`` from configs.
     ignore_missing : bool [False]
         Whether missing reference networks in inventory
         should be ignored when updating from service.
@@ -820,7 +827,9 @@ def run(configfile, maxage=None, ignore_missing=False):
 
     Notes
     -----------
-    Only runs if no other instance is found (``DoubleProcessCheck()``)
+    Only runs if no other instance is found (``DoubleProcessCheck()``).
+    Make sure though, that ``maxage`` is sufficiently long, e.g.
+    maxage >= eia_timeout.
     """ 
 
 
@@ -830,11 +839,11 @@ def run(configfile, maxage=None, ignore_missing=False):
     module_logger.info(10*'-'+'Starting new request'+10*'-')
     
     ## Run Check
+    print("MAXAGE:", maxage)
     if maxage is None:
         maxage = config.avtest['eia_timeout']
     pcheck = DoubleProcessCheck(maxage=maxage)
     if pcheck.should_exit():
-        pcheck.logger.debug('Another instance is running')
         exit()
 
 

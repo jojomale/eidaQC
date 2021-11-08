@@ -20,22 +20,43 @@ Test availability of data on random station in
 European Integrated Data Archive.
 
 
+A test can be executed by calling ``run()`` in a script or
+from command line using:
 
-- Conducts random waveform requests to single channels of EIDA stations.
-- Requested time span randomly selected from last year, span length between
-  60 and 600 s.
-- Station randomly selected from the subset of unrestricted 
-  European EIDA
-  stations offering at least one out of channels `HHZ`, `BHZ`, `EHZ` or `SHZ`.
-- Request full station metadata from selected station and choose channel
-  randomly, restricted to channels `HH?`, `BH?`, `EH?` and `SH?`.
-- On successful request apply a restitution to the waveform data.
-- Evaluate and store result of request in a file database.
-- Plot and statistically analyze content of file database.
-- Intended use case is to regularly run the request e.g. via cron job
-  to build up a data base. The results can be evaluated using the
-  module `eida_report`.
+.. code-block:: console
 
+    eida avail [ignore-missing] <configfile>
+
+
+The optional ``ignore-missing`` flag can be used to force the creation
+of a station inventory despite missing reference networks. This may be
+useful when no cached inventory is available, e.g. when running for the 
+first time.
+
+The test consists of:
+
+1. randomly selecting a station from the inventory
+2. requesting the inventory at response level for this station
+3. randomly selecting a channel from station inventory
+4. request data for a randomly selected interval from a given 
+   time range
+5. Remove instrument response from retrieved data
+6. Write status code representing the outcome of steps 4 and 5 to
+   file
+
+The intended use case is to regularly run the request e.g. via cron job
+to build up a data base. The results can be evaluated using the
+module ``eida_report`` and should help to assess the reliability of access
+to the data.
+
+Meta ("inventory") and waveform data are requested via 
+`obspy.clients.fdsn.RoutingClient 
+<https://docs.obspy.org/packages/autogen/obspy.clients.fdsn.routing.routing_client.RoutingClient.html#obspy.clients.fdsn.routing.routing_client.RoutingClient/>`_
+using ``get_stations()`` and ``get_waveforms()``, respectively.
+
+
+Notes
+----------
 The code does not use the waveform catalog, therefore empty waveform returns
 are due to data gaps or due to problems in data access and delivery.
 
@@ -74,8 +95,9 @@ class EidaAvailability:
     Manage and execute random data requests.
 
     The main methods to use are:
-    - random_request()
-    - process_request()
+
+    - ``random_request()``
+    - ``process_request()``
 
     Parameters
     --------------
@@ -170,7 +192,7 @@ class EidaAvailability:
         If this is not the case, we reuse the old inventory for now, but
         try to update the inventory from service every 
         ``inv_update_waittime`` seconds. 
-        Please choose `inv_update_waittime` and `maxcacheage` carefully
+        Please choose ``inv_update_waittime`` and ``maxcacheage`` carefully
         since these routing requests place a significant
         load in the servers and should not be called more often than 
         necessary.
@@ -698,6 +720,11 @@ class DoubleProcessCheck:
 
     Process id is stored in a temporary file 
     while program is running.
+
+    Notes
+    -----------
+    Make sure that ``maxage`` is sufficiently long, e.g.
+    maxage >= eia_timeout.
     """
 
     def __init__( self, maxage=300 ):
@@ -741,7 +768,8 @@ class DoubleProcessCheck:
     def should_exit( self ):
         """
         True, if instance is up and running. If not, a process file
-        is created, returns False. Subsequent calls should return True.
+        is created, returns False. Subsequent calls within ``maxage`` 
+        should return True.
         """
         if self.process_active():
             self.logger.info('Another instance is running. I should exit.')

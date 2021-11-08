@@ -64,7 +64,7 @@ def main():
         else:
             ignore_missing = False
         from . import eida_availability
-        eida_availability.run(configfile, maxage=1, 
+        eida_availability.run(configfile, maxage=None, 
                     ignore_missing=ignore_missing)
 
     elif "inv" in prg.lower():

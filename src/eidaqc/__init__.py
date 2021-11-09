@@ -12,11 +12,12 @@ automatic summary report of the results.
 
 Installation
 ================
+Eidaqc runs on **Python 3.7 or higher**.
+You need `pip 
+<https://pip.pypa.io/en/latest//>`_ to install eidaqc.
 
 Install dependencies
 --------------------------
-You need `pip <https://pip.pypa.io/en/latest//>`_ to install eidaqc.
-
 The following packages are required to run eidaqc:
 
 - `Numpy <https://numpy.org/install//>`_

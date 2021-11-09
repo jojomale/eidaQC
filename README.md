@@ -2,7 +2,9 @@
 *all errors are handled properly*
 
 
-Run tests on the [European Integrated Data Archive](http://www.orfeus-eu.org/data/eida/) for seismological data
+Run tests on the 
+[European Integrated Data Archive](http://www.orfeus-eu.org/data/eida/) 
+for seismological data
 to check the availability of waveform data and the processing of metadata requests.
 
 This package provides two different tests to check the availability
@@ -21,7 +23,7 @@ https://eidaqc.readthedocs.io/
 
 ## Install dependencies
 You need `pip` to install eidaqc. Eidaqc was developed on Python 3.9.7 but
-should run on lower versions of Python 3. Python 2 is not supported.
+should run on lower versions of Python >= 3.7. Python 2 is not supported.
 
 The following packages are required to run eidaqc:
 - Obspy: https://github.com/obspy/obspy/wiki#installation

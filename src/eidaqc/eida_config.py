@@ -193,7 +193,10 @@ import tempfile
 
 # https://realpython.com/python-import/#resource-imports
 # https://docs.python.org/3/library/importlib.html#module-importlib.resource
-from importlib import resources
+try:
+    from importlib import resources
+except (ImportError, ModuleNotFoundError):
+    import importlib_resources as resources
 # from re import T
 
 from obspy.core.utcdatetime import UTCDateTime

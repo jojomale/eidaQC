@@ -6,13 +6,22 @@ https://github.com/pypa/sampleproject
 """
 
 # Always prefer setuptools over distutils
+import importlib
 from setuptools import setup, find_packages
 import pathlib
+import sys
 
 here = pathlib.Path(__file__).parent.resolve()
 
 # Get the long description from the README file
 long_description = (here / 'README.md').read_text(encoding='utf-8')
+
+# Set dependencies, depending on python version
+if sys.version_info.minor >=7:
+    install_requires=['numpy','matplotlib','obspy']
+else:
+    install_requires=['numpy','matplotlib','obspy', 'importlib_resources']
+
 
 # Arguments marked as "Required" below must be included for upload to PyPI.
 # Fields marked as "Optional" may be commented out.
@@ -143,7 +152,7 @@ setup(
     #
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=['numpy','matplotlib','obspy'],  # Optional
+    install_requires=install_requires,  # Optional
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
@@ -154,9 +163,10 @@ setup(
     # Similar to `install_requires` above, these must be valid existing
     # projects.
     # extras_require={  # Optional
-    #     'dev': ['check-manifest'],
-    #     'test': ['coverage'],
-    # },
+    # #     'dev': ['check-manifest'],
+    # #     'test': ['coverage'],
+    #         'old': ['importlib_resources'],
+    #  },
 
     # If there are data files included in your packages that need to be
     # installed, specify them here.

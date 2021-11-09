@@ -90,7 +90,6 @@ manual. Obspy wasn't tested so far.
 - venv: https://docs.python.org/3/library/venv.html
 
 
-
 .. code-block:: bash
 
     $ sudo apt install python3-venv python3-pip
@@ -104,24 +103,19 @@ manual. Obspy wasn't tested so far.
 
 
 
-
-
-
-
- 
-
 Install eidaqc
 ------------------
-After installing the dependencies, eidaqc can be installed 
-via pip from Github:
+eidaqc can be installed via pip from Github:
 
 .. code-block:: console
 
     $ pip install git+https://github.com/jojomale/eidaQC.git
 
-
 Afterwards the command ``eida`` should be available.    
 
+If you run Python<=3.6, this will additionally install 
+`importlib_resources 
+<https://importlib-resources.readthedocs.io/en/latest/index.html/>`_.
 
 
 

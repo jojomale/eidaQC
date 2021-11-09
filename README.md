@@ -23,7 +23,7 @@ https://eidaqc.readthedocs.io/
 
 ## Install dependencies
 You need `pip` to install eidaqc. Eidaqc was developed on Python 3.9.7 but
-should run on lower versions of Python >= 3.7. Python 2 is not supported.
+should run on lower versions of Python 3 (tested Python 3.6, requires additional package importlib_resources). Python 2 is not supported.
 
 The following packages are required to run eidaqc:
 - Obspy: https://github.com/obspy/obspy/wiki#installation
@@ -37,35 +37,7 @@ Optionally, if you want your results plotted on a nice map, you should install o
 Cartopy is recommended and preferred, but on an older system (Ubuntu 18.04)
 installation of its predecessor basemap might be easier. However, development of basemap has stopped and shifted to cartopy.
 
-
-### Using conda
-eidaqc itself will be installed via pip. However conda makes
-the installation of the required packages a lot easier,
-notably for the mapping library.
-
-You may want to create a virtual environment first:
-
-    ```
-    $ conda create -n myeidaqc pip
-    $ conda activate myeidaqc
-    ```
-
-    ```
-    $ conda install -c conda-forge cartopy obspy matplotlib numpy
-    ```
-
-
-## Without conda
-Virtual environments can also be managed e.g. `virtualenv`.
-Installing the package including its dependencies directly from
-pip doesn't work because the dependencies have dependencies of
-their own. 
-In particular cartopy requires a installation of its dependencies
-in the right order, so please refer to their installation
-manual. Obspy wasn't tested so far.
-
-*If you can provide a working installation order please let us know.*
-
+For more details, take a look at https://eidaqc.readthedocs.io/en/latest/eidaqc.html#installation
 
 ## Install eidaqc
 

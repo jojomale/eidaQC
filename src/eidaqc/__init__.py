@@ -163,4 +163,71 @@ configfile:
     "default_config.ini" in current dir.
 
 
+
+In cron job
+-----------------
+The tests are intended to be run on a regular basis. E.g.
+we run the availability test every minute and the inventory
+test every hour.
+
+On Linux, the command line interface can be used to run 
+tests regularly as `cron job 
+<https://help.ubuntu.com/community/CronHowto/>`_.
+
+If you run eidaqc without conda, you can insert the CLI commands
+directly in the crontab. If you run on conda, you may need to 
+first activate the environment, in which eidaqc lives, with the
+cron task. We use a bash script that combines the activation
+of conda and the eida command (file eida_conda_cron.sh in 
+GitHub repo):
+
+.. code-block:: bash
+
+    #!/bin/bash/
+
+    # Call as:
+    # $ run_eida_avail <prg>
+    # <prg> can be `avail`, `inv` or `rep`
+
+    # Path to config file
+    configfile=~/Work/config_eidatests.ini
+    invlevel="channel"
+    echo "running eida test with "$configfile
+
+    # Activate conda environment with eidaqc
+    source ~/miniconda3/etc/profile.d/conda.sh
+    conda activate eidaQC
+
+    # Run CLI
+    if [ $1 == "avail" ]; then
+    eida avail $configfile
+    elif [ $1 == "inv" ]; then
+    eida inv $invlevel $configfile
+    elif [ $1 == "rep" ]; then
+    eida rep $configfile
+    else
+    echo "Unknown argument" $1
+    fi
+
+    # Deactivate conda again
+    conda deactivate
+
+
+
+Our corresponding cron tab looks like this:
+
+.. code-block:: bash
+
+    # Shell variable for cron
+    SHELL=/bin/bash
+    # PATH variable for cron
+    PATH=~/miniconda3/bin:/home/lehr/miniconda3/condabin:/usr/local/bin:/usr/local/sbin:/sbin:/usr/sbin>
+    # m h  dom mon dow   command
+    * * * * * conda activate eidaQC; bash ~/Work/run_eida_avail.sh avail>> ~/Work/cronlog.txt
+    1 * * * * conda activate eidaQC; bash ~/Work/run_eida_avail.sh inv>> ~/Work/cronlog_inv.txt
+
+
+
+
+
 """

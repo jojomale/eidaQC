@@ -7,9 +7,9 @@ Run tests on the
 for seismological data
 to check the availability of waveform data and the processing of metadata requests.
 
-This package provides two different tests to check the availability
-of data and the processing of data requests on 
-EIDA. The tests are intended to be run on a regular 
+This package provides two different tests to check the availability of waveform data and the processing of 
+meta data requests on EIDA. 
+The tests are intended to be run on a regular 
 basis, e.g. via a cron job. The package also creates an
 automatic summary report of the results.
 

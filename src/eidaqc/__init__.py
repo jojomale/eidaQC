@@ -2,7 +2,7 @@
 Run test on data request processing in Eida virtual network.
 
 This package provides two different tests to check the availability
-of data and the processing of data requests on the 
+of waveform data and the processing of meta data requests on the 
 EIDA network. The tests are intended to be run on a regular 
 basis, e.g. via a cron job. The package also creates an
 automatic summary report of the results.
@@ -83,8 +83,6 @@ their own.
 In particular cartopy requires a installation of its dependencies
 in the right order, so please refer to their installation
 manual. Obspy wasn't tested so far.
-
-*If you can provide a working installation order please let us know.*
     
 - https://packaging.python.org/guides/installing-using-linux-tools/#installing-pip-setuptools-wheel-with-linux-package-managers
 - venv: https://docs.python.org/3/library/venv.html
@@ -110,6 +108,14 @@ eidaqc can be installed via pip from Github:
 .. code-block:: console
 
     $ pip install git+https://github.com/jojomale/eidaQC.git
+
+If you do not want pip to install dependencies, e.g. because you
+want to use system installations, use:
+
+.. code-block:: console
+
+    $ pip install --no-deps git+https://github.com/jojomale/eidaQC.git
+
 
 Afterwards the command ``eida`` should be available.    
 

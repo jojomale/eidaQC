@@ -96,7 +96,7 @@ manual.
 
 
 On **Ubuntu**, you can install obspy from an `apt repository 
-<https://github.com/obspy/obspy/wiki/Installation-on-Linux-via-Apt-Repository/>_`. 
+<https://github.com/obspy/obspy/wiki/Installation-on-Linux-via-Apt-Repository/>`_. 
 This should install all necessary libraries including 
 numpy, matplotlib and basemap.
 
@@ -143,15 +143,16 @@ Command line options
 ---------------------------
 Method
 `````````````
-- ``avail``: run availability test
-- ``inv``:   run inventory test
-- ``rep``:   create html and pdf report
+- ``avail``: run availability test (:py:mod:`eidaqc.eida_availability`)
+- ``inv``:   run inventory test (:py:mod:`eidaqc.eida_inventory`)
+- ``rep``:   create html and pdf report (:py:mod:`eidaqc.eida_report`)
 - ``templ``: create templates of config file 
-  and html-style file
+  and html-style file (:py:mod:`eidaqc.eida_config`)
 
 args:
 `````````
-- ``avail``: optionally `ignore-missing`. Forces creation
+- ``avail``: [ignore-missing]
+    Optional. Forces creation
     of new inventory despite missing reference networks.
     Useful, if run for the first time.
 - ``inv``: <level>

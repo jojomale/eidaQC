@@ -162,6 +162,7 @@ The config-file should look like this:
       INFO, WARNING, ERROR, CRITICAL. DEBUG is most verbose.
     - ``loglevel_file``: same as above, but for messages written
       sent to temporary file.
+      
     The following parameters handle the rotation of logging files.
     We use a `TimedRotatingFileHandler 
     <https://docs.python.org/3/library/logging.handlers.html#logging.handlers.TimedRotatingFileHandler/>`_

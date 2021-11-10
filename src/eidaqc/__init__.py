@@ -12,9 +12,16 @@ automatic summary report of the results.
 
 Installation
 ================
-Eidaqc runs on **Python 3.7 or higher**.
+Eidaqc runs on **Python 3.6 or higher**.
 You need `pip 
 <https://pip.pypa.io/en/latest//>`_ to install eidaqc.
+
+Eidaqc was developed on Python 3.9.7 and Linux Mint 20 (based on
+Ubuntu 20.04). 
+It should run on lower versions of Python 3 (tested Python 3.6, 
+requires additional package importlib_resources). Python 2 
+is not supported.
+
 
 Install dependencies
 --------------------------
@@ -82,20 +89,16 @@ pip doesn't work because the dependencies have dependencies of
 their own. 
 In particular cartopy requires a installation of its dependencies
 in the right order, so please refer to their installation
-manual. Obspy wasn't tested so far.
+manual.
     
 - https://packaging.python.org/guides/installing-using-linux-tools/#installing-pip-setuptools-wheel-with-linux-package-managers
 - venv: https://docs.python.org/3/library/venv.html
 
 
-.. code-block:: bash
-
-    $ sudo apt install python3-venv python3-pip
-    $ python3 -m venv net/EIDAQC
-    $ source net/EIDAQC/bin/activate
-    $ pip install numpy matplotlib obspy
-    $ sudo apt install libgeos-dev
-    $ sudo apt-get install proj-bin
+On **Ubuntu**, you can install obspy from an `apt repository 
+<https://github.com/obspy/obspy/wiki/Installation-on-Linux-via-Apt-Repository/>_`. 
+This should install all necessary libraries including 
+numpy, matplotlib and basemap.
 
 
 
@@ -110,7 +113,7 @@ eidaqc can be installed via pip from Github:
     $ pip install git+https://github.com/jojomale/eidaQC.git
 
 If you do not want pip to install dependencies, e.g. because you
-want to use system installations, use:
+want to use system packages installed via **apt**, use:
 
 .. code-block:: console
 
@@ -119,7 +122,7 @@ want to use system installations, use:
 
 Afterwards the command ``eida`` should be available.    
 
-If you run Python<=3.6, this will additionally install 
+If you run Python<=3.7, this will additionally install 
 `importlib_resources 
 <https://importlib-resources.readthedocs.io/en/latest/index.html/>`_.
 
@@ -148,7 +151,9 @@ Method
 
 args:
 `````````
-- ``avail``: -
+- ``avail``: optionally `ignore-missing`. Forces creation
+    of new inventory despite missing reference networks.
+    Useful, if run for the first time.
 - ``inv``: <level>
     request level for inventory. Any of
     'network', 'station' or 'channel'

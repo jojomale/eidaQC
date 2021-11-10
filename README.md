@@ -21,6 +21,8 @@ https://eidaqc.readthedocs.io/
 
 # Installation
 
+For more details, take a look at https://eidaqc.readthedocs.io/en/latest/eidaqc.html#installation
+
 ## Install dependencies
 You need `pip` to install eidaqc. Eidaqc was developed on Python 3.9.7 but
 should run on lower versions of Python 3 (tested Python 3.6, requires additional package importlib_resources). Python 2 is not supported.
@@ -36,8 +38,6 @@ Optionally, if you want your results plotted on a nice map, you should install o
 
 Cartopy is recommended and preferred, but on an older system (Ubuntu 18.04)
 installation of its predecessor basemap might be easier. However, development of basemap has stopped and shifted to cartopy.
-
-For more details, take a look at https://eidaqc.readthedocs.io/en/latest/eidaqc.html#installation
 
 ## Install eidaqc
 
@@ -66,7 +66,8 @@ via pip from Github:
             and html-style file
 
 ### args:
-- `avail`: -
+- `avail`: optionally `ignore-missing`. Forces creation
+    of new inventory despite missing reference networks
 - `inv`: <level>
     request level for inventory. Any of
     'network', 'station' or 'channel'

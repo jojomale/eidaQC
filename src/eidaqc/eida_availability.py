@@ -867,7 +867,7 @@ def run(configfile, maxage=300, ignore_missing=False):
     module_logger.info(10*'-'+'Starting new request'+10*'-')
     
     ## Run Check
-    print("MAXAGE:", maxage)
+    # print("MAXAGE:", maxage)
     if maxage is None:
         maxage = config.avtest['eia_timeout']
     pcheck = DoubleProcessCheck(maxage=maxage)

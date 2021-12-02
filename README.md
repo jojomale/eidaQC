@@ -24,7 +24,7 @@ https://eidaqc.readthedocs.io/
 For more details, take a look at https://eidaqc.readthedocs.io/en/latest/eidaqc.html#installation
 
 ## Install dependencies
-You need `pip` to install eidaqc. Eidaqc was developed on Python 3.9.7 but
+You need `pip` or `pipenv` to install eidaqc. Eidaqc was developed on Python 3.9.7 but
 should run on lower versions of Python 3 (tested Python 3.6, requires additional package importlib_resources). Python 2 is not supported.
 
 The following packages are required to run eidaqc:
@@ -32,21 +32,34 @@ The following packages are required to run eidaqc:
 - Numpy
 - Matplotlib
 
+Their **installation will be forced** along the installation of eidaqc if not already present.
+
+
 Optionally, if you want your results plotted on a nice map, you should install one of these mapping libraries:
 - Cartopy: https://scitools.org.uk/cartopy/docs/latest/installing.html
 - Basemap Matplotlib Toolkit: https://matplotlib.org/basemap/
 
+They are **not installed automatically** with eidaqc if not already available to your Python.
+
 Cartopy is recommended and preferred, but on an older system (Ubuntu 18.04)
 installation of its predecessor basemap might be easier. However, development of basemap has stopped and shifted to cartopy.
+
 
 ## Install eidaqc
 
 After installing the dependencies, eidaqc can be installed 
-via pip from Github:
+via pip from Github (also recommended if you use conda):
 
 
     ```
     $ pip install git+https://github.com/jojomale/eidaQC.git
+    ```
+
+
+Alternatively can also use pipenv:
+
+    ```
+    $ pipenv install git+https://github.com/jojomale/eidaQC.git#egg=eidaqc
     ```
 
 # Usage

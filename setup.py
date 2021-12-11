@@ -17,6 +17,11 @@ here = pathlib.Path(__file__).parent.resolve()
 long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 # Set dependencies, depending on python version
+# We use importlib.resources.files which is only available for python>=3.9
+# so we use importlib_resources instead, which is a package designed for
+# backward implementation of the newer built-in importlib.resources module
+# Importlib.resources was only introduced in Python3.7, so for lower versions
+# we need the alternative anyway.
 if sys.version_info.minor >=9:
     install_requires=['numpy','matplotlib','obspy']
 else:

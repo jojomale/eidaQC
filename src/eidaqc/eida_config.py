@@ -194,6 +194,9 @@ import tempfile
 
 # https://realpython.com/python-import/#resource-imports
 # https://docs.python.org/3/library/importlib.html#module-importlib.resource
+# importlib.resources.files is only available for Python>=3.9,
+# Setup should have forced installation of importlib_resources>=1.4
+# for lower versions, so we use that instead then.
 try:
     # from importlib import resources
     from importlib.resources import files, open_text

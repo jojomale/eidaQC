@@ -17,10 +17,10 @@ here = pathlib.Path(__file__).parent.resolve()
 long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 # Set dependencies, depending on python version
-if sys.version_info.minor >=7:
+if sys.version_info.minor >=9:
     install_requires=['numpy','matplotlib','obspy']
 else:
-    install_requires=['numpy','matplotlib','obspy', 'importlib_resources']
+    install_requires=['numpy','matplotlib','obspy', 'importlib_resources>=1.4']
 
 
 # Arguments marked as "Required" below must be included for upload to PyPI.
@@ -110,7 +110,7 @@ setup(
         # that you indicate you support Python 3. These classifiers are *not*
         # checked by 'pip install'. See instead 'python_requires' below.
         'Programming Language :: Python :: 3',
-        # 'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',

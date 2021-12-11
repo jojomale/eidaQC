@@ -195,9 +195,11 @@ import tempfile
 # https://realpython.com/python-import/#resource-imports
 # https://docs.python.org/3/library/importlib.html#module-importlib.resource
 try:
-    from importlib import resources
+    # from importlib import resources
+    from importlib.resources import files, open_text
 except (ImportError, ModuleNotFoundError):
-    import importlib_resources as resources
+    # import importlib_resources as resources
+    from importlib_resources import files, open_text
 # from re import T
 
 from obspy.core.utcdatetime import UTCDateTime
@@ -481,7 +483,7 @@ eia_reqstats_timespan_days = 92 # Request statistics over 3 months back.
 # eia_spec_default_cssfile = "/home/stammler/svn/SzgrfDc/texts/styles/ks.css"
 
 module_path = os.path.dirname(eida_logger.__file__)
-eia_spec_default_cssfile = str(resources.files("eidaqc").joinpath("html_report.css"))
+eia_spec_default_cssfile = str(files("eidaqc").joinpath("html_report.css"))
 eia_tmp_path = tempfile.gettempdir()
 
 # Exclude temporary and not european networks.
@@ -702,7 +704,7 @@ def load_css_template(outfile=None):
         raise RuntimeError("Give filename as str or set to None")
 
     with open(outfile, 'w') as f:
-        with resources.open_text("eidaqc", "html_report.css") as rp:
+        with open_text("eidaqc", "html_report.css") as rp:
             for l in rp.readlines():
                 f.write(l)
 

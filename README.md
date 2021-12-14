@@ -184,31 +184,6 @@ Alias:
 - ``rep``
 
 
-
-### Method
-- `avail`: run availability test
-- `inv`:   run inventory test
-- `rep`:   create html and pdf report
-- `templ`: create templates of config file 
-            and html-style file
-
-### args:
-- `avail`: optionally `ignore-missing`. Forces creation
-    of new inventory despite missing reference networks
-- `inv`: <level>
-    request level for inventory. Any of
-    'network', 'station' or 'channel'
-- `rep`: -
-- `templ`: -
-
-### configfile:
-- methods 'avail', 'inv', 'rep': mandatory,
-        path to config file
-- method 'templ': optional; file name for default
-    file. If not given file name will be 
-    "default_config.ini" in current dir.
-
-
 # Build documentation
 Documentation is build using sphinx and the readthedocs-template. You need to install both:
 
@@ -246,7 +221,7 @@ html_theme = 'sphinx_rtd_theme'
 Then run:
 ```bash
 $ sphinx-apidoc -e -M -f -o . ../src/eidaqc
-$ sphinx-build -b html . html
+$ sphinx-build -b html docs/source/ docs/html
 ```
 
 The first lays out the package structure in `modules.rst`

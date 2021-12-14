@@ -67,10 +67,125 @@ Alternatively can also use pipenv:
 1. as API
 2. as command line tool:
     ```
-    eida <method> <args> <configfile>
+    eida <subcommand> <args> <configfile>
     ```
 
-## Command line options
+## Command line interface
+
+The main functionalities of the eidaqc-package are 
+available as command line tools. The commands work similar to svn or git commands.
+The options for ``<args>`` and ``<configfile>`` depend 
+on the subcommand.
+
+
+
+### eida
+
+If you call ``eida`` without arguments, you get a man page.
+
+
+### eida template
+
+Usage:
+
+```
+    eida template [-h] [-o OUTPUTFILE]
+```
+
+Creates a default configuration file and css-file for 
+html-report in the current directory.
+
+Optional arguments:
+    - ``-h``, ``--help``  
+        show help message
+    - ``-o OUTPUTFILE``, ``--outputfile OUTPUTFILE``: 
+        file name for 
+        default file. If not given, file name will be 
+        ``OUTPUTFILE = ./default_config.ini``
+        in current directory.
+
+Alias:
+    - ``templ``
+
+
+### eida availability
+
+Run availability test.
+
+Usage:
+
+```
+    eida availability [-h] [-i] configfile
+```
+
+Required arguments:
+    - ``configfile``            
+        Configuration file with parameter settings. Use 
+        ``eida templ`` to create default template.
+
+Optional arguments:
+    - ``-h``, ``--help``  
+        show help message
+    - ``-i``, ``--ignore_missing``  
+        If set missing networks will be ignored, when inventory 
+        is requested from server. Use when run for the first time 
+        and no cached inventory ('outdir/chanlist_cache.pickle')
+        is available.
+
+Alias:
+    - ``avail``
+
+
+### eida inventory
+
+Run inventory test.
+
+Usage:
+
+```
+    eida inventory [-h] {network,station,channel} configfile
+```
+
+Required arguments:
+    - ``{network,station,channel}``
+        Level of detail for the requested inventories. 
+        ``network`` provides the least information (and puts the 
+        least amount of load on the servers).
+    - ``configfile``            
+        Configuration file with parameter settings. 
+        Use ``eida templ`` to create default template.
+
+Optional arguments:
+  -h, --help            show this help message and exit
+
+
+Alias:
+    - ``inv``
+
+
+### eida report
+
+Create html and pdf report.
+
+Usage:
+```
+    eida report [-h] configfile
+```
+
+Required arguments:
+    - ``configfile``            
+        Configuration file with parameter settings. 
+        Use ``eida templ`` to create default template.
+
+Optional arguments:
+    - ``-h``, ``--help``  
+        show help message
+
+Alias:
+    - ``rep``
+
+
+
 ### Method
 - `avail`: run availability test
 - `inv`:   run inventory test

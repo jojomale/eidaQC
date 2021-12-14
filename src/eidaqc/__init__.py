@@ -159,15 +159,14 @@ If you call ``eida`` without arguments, you get a man page.
 
 eida template
 ```````````````
+Creates a default configuration file and css-file for 
+html-report in the current directory (:py:mod:`eidaqc.eida_config`).
+
 Usage:
 
 .. code-block:: console
 
     eida template [-h] [-o OUTPUTFILE]
-
-
-Creates a default configuration file and css-file for 
-html-report in the current directory (:py:mod:`eidaqc.eida_config`).
 
 Optional arguments:
     - ``-h``, ``--help``  

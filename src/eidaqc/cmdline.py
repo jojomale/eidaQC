@@ -1,39 +1,26 @@
 """
 Command line interface to eidaqc package
 
-Syntax:
-    eida <method> <args> <configfile>
+The general syntax is:
 
-    eida templ [configfile]
-    eida avail [ignore-missing] configfile
-    eida inv {network, station, channel} configfile
-    eida rep configfile
-    
+.. code-block:: console
 
-method:
-    - avail: run availability test
-    - inv:   run inventory test
-    - rep:   create html and pdf report
-    - templ: create templates of config file 
-    and html-style file
+    eida <subcommand> <args> <configfile>
 
-args:
-    - avail: ignore-missing (optional), if given
-        missing reference networks after inventory
-        update are ignored. Use to force the creation
-        of an initial inventory.
-    - inv: request level for inventory. Any of
-        'network', 'station' or 'channel'
-    - rep: none
-    - templ: none
 
-configfile:
-    - methods 'avail', 'inv', 'rep': 
-        mandatory, path to config file
-    - method 'templ': 
-        optional; file name for default
-        file. If not given file name will be 
-        "default_config.ini" in current dir.
+So, the commands work similar to svn or git commands.
+The options for ``<args>`` and ``<configfile>`` depend 
+on the subcommand.
+For details see :ref:`here <cli>` .
+
+Technical notes
+----------------
+Parsing of command line arguments is handled using
+argparse. Subcommands are handled as subparsers, each
+of which has ``func`` set as default which points to 
+a small function that executes the corresponding 
+command of the eiqaqc API.
+
 
 """
 
@@ -41,19 +28,29 @@ configfile:
 import argparse, pathlib, sys
 
 
-def eida_templ(parser, args):
-    print("EIDA tmpl", args)
+def _eida_templ(parser, args):
+    """
+    Executed if subparser *templ* is called.
+    """
     from .eida_config import create_default_configfile
     create_default_configfile(args.outputfile)
 
-def eida_avail(parser, args):
+
+def _eida_avail(parser, args):
+    """
+    Executed if subparser *avail* is called.
+    """
     if any([args.configfile is None]):
         parser.parse_args(["avail", "-h"])
     from . import eida_availability
     eida_availability.run(args.configfile, maxage=None, 
                 ignore_missing=args.ignore_missing)
 
-def eida_inv(parser, args):
+
+def _eida_inv(parser, args):
+    """
+    Executed if subparser *inv* is called.
+    """
     print(args)
     if any([args.configfile is None, args.request_level is None]):
         parser.parse_args(["avail", "-h"])   
@@ -62,7 +59,10 @@ def eida_inv(parser, args):
     eida_inventory.run(args.request_level, args.configfile)
 
 
-def eida_rep(parser, args):
+def _eida_rep(parser, args):
+    """
+    Executed if subparser *rep* is called.
+    """
     if args.configfile is None:
         parser.parse_args(["rep", "-h"])
     from .eida_config import EidaTestConfig
@@ -74,16 +74,21 @@ def eida_rep(parser, args):
 
 
 def main():
+    """
+    Main routine that defines the parsers and calls
+    the subroutines depending on user input (i.e.
+    parsed arguments)
+    """
 
+    # Main parser
     parser = argparse.ArgumentParser(description="Command line " + 
         "interface to eidaqc package",
         epilog="Use `eida subcommand -h` for details and options on each command.")
     subparsers = parser.add_subparsers(title="subcommands", 
         help="one of the subprogram in eidaqc",
-        # action="help"
-        #choices=["templ", "avail", "inv", "rep"]
         )
     
+    # Define arguments for subparsers
     templ = subparsers.add_parser("templ", 
         description="Create default files",
         help="Create default files",
@@ -94,8 +99,7 @@ def main():
         help="file name for default file. " +
              "If not given file name will be "+
              "'default_config.ini' in current dir.")
-    templ.set_defaults(func=eida_templ)
-
+    templ.set_defaults(func=_eida_templ)
 
     avail = subparsers.add_parser("avail",
         description="Run availability test",
@@ -111,7 +115,7 @@ def main():
             "when inventory is requested from server. "+
             "Use when run for the first time and no cached inventory "+
             "is available ('outdir/chanlist_cache.pickle')")
-    avail.set_defaults(func=eida_avail)
+    avail.set_defaults(func=_eida_avail)
 
     inv = subparsers.add_parser("inv",
         description="Run inventory test",
@@ -127,8 +131,7 @@ def main():
         type=pathlib.Path,
         help="Configuration file with parameter settings. "+ 
             "Use `eida templ` to create default template.")
-    inv.set_defaults(func=eida_inv)
-
+    inv.set_defaults(func=_eida_inv)
 
     rep = subparsers.add_parser("rep",
         description="Create report of Eidaqc test results.",
@@ -139,10 +142,9 @@ def main():
         type=pathlib.Path,
         help="Configuration file with parameter settings. "+ 
             "Use `eida templ` to create default template.")
-    rep.set_defaults(func=eida_rep)
+    rep.set_defaults(func=_eida_rep)
 
-    #print(parser._subparse)
-    #print(parser.parse_args())
+
     args = parser.parse_args()
 
     # If User enters only 'eida' we show help of 
@@ -150,9 +152,11 @@ def main():
     if len(sys.argv) < 2:
         parser.parse_args(["-h"])
     
+    # Otherwise we call the respective subroutine
     args.func(parser, args)
     
     print('Finish')
+
 
 if __name__ == "__main__":
     main()

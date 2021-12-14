@@ -134,40 +134,133 @@ Usage
 1. as API
 2. as command line tool:
 
+
+.. _cli:
+
+Command line interface
+---------------------------
+The main functionalities of the eidaqc-package are 
+available as command line tools. The general syntax is:
+
 .. code-block:: console
 
-    eida <method> <args> <configfile>
+    eida <subcommand> <args> <configfile>
 
 
-Command line options
----------------------------
-Method
-`````````````
-- ``avail``: run availability test (:py:mod:`eidaqc.eida_availability`)
-- ``inv``:   run inventory test (:py:mod:`eidaqc.eida_inventory`)
-- ``rep``:   create html and pdf report (:py:mod:`eidaqc.eida_report`)
-- ``templ``: create templates of config file 
-  and html-style file (:py:mod:`eidaqc.eida_config`)
+So, the commands work similar to svn or git commands.
+The options for ``<args>`` and ``<configfile>`` depend 
+on the subcommand.
 
-args:
-`````````
-- ``avail``: [ignore-missing]
-    Optional. Forces creation
-    of new inventory despite missing reference networks.
-    Useful, if run for the first time.
-- ``inv``: <level>
-    request level for inventory. Any of
-    'network', 'station' or 'channel'
-- ``rep``: -
-- ``templ``: -
 
-configfile:
-`````````````
-- methods ``avail``, ```inv``, ``rep``: mandatory,
-        path to config file
-- method ``templ``: optional; file name for default
-    file. If not given file name will be 
-    "default_config.ini" in current dir.
+eida
+````````
+If you call ``eida`` without arguments, you get a man page.
+
+
+eida template
+```````````````
+Usage:
+
+.. code-block:: console
+
+    eida template [-h] [-o OUTPUTFILE]
+
+
+Creates a default configuration file and css-file for 
+html-report in the current directory (:py:mod:`eidaqc.eida_config`).
+
+Optional arguments:
+    - ``-h``, ``--help``  
+        show help message
+    - ``-o OUTPUTFILE``, ``--outputfile OUTPUTFILE``: 
+        file name for 
+        default file. If not given, file name will be 
+        ``OUTPUTFILE = ./default_config.ini``
+        in current directory.
+
+Alias:
+    - ``templ``
+
+
+eida availability
+``````````````````
+Run availability test (:py:mod:`eidaqc.eida_availability`).
+
+Usage:
+
+.. code-block:: console
+
+    eida availability [-h] [-i] configfile
+
+
+Required arguments:
+    - ``configfile``            
+        Configuration file with parameter settings. Use 
+        ``eida templ`` to create default template.
+
+Optional arguments:
+    - ``-h``, ``--help``  
+        show help message
+    - ``-i``, ``--ignore_missing``  
+        If set missing networks will be ignored, when inventory 
+        is requested from server. Use when run for the first time 
+        and no cached inventory ('outdir/chanlist_cache.pickle')
+        is available.
+
+Alias:
+    - ``avail``
+
+
+eida inventory
+`````````````````
+Run inventory test (:py:mod:`eidaqc.eida_inventory`).
+
+Usage:
+
+.. code-block:: console
+
+    eida inventory [-h] {network,station,channel} configfile
+
+
+Required arguments:
+    - ``{network,station,channel}``
+        Level of detail for the requested inventories. 
+        ``network`` provides the least information (and puts the 
+        least amount of load on the servers).
+    - ``configfile``            
+        Configuration file with parameter settings. 
+        Use ``eida templ`` to create default template.
+
+Optional arguments:
+  -h, --help            show this help message and exit
+
+
+Alias:
+    - ``inv``
+
+
+eida report
+````````````
+Create html and pdf report (:py:mod:`eidaqc.eida_report`).
+
+Usage:
+
+.. code-block:: console
+
+    eida report [-h] configfile
+
+
+Required arguments:
+    - ``configfile``            
+        Configuration file with parameter settings. 
+        Use ``eida templ`` to create default template.
+
+Optional arguments:
+    - ``-h``, ``--help``  
+        show help message
+
+Alias:
+    - ``rep``
 
 
 

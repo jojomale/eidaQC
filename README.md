@@ -87,25 +87,24 @@ If you call ``eida`` without arguments, you get a man page.
 ### eida template
 
 Usage:
-
 ```
-    eida template [-h] [-o OUTPUTFILE]
+eida template [-h] [-o OUTPUTFILE]
 ```
 
 Creates a default configuration file and css-file for 
 html-report in the current directory.
 
 Optional arguments:
-    - ``-h``, ``--help``  
-        show help message
-    - ``-o OUTPUTFILE``, ``--outputfile OUTPUTFILE``: 
-        file name for 
-        default file. If not given, file name will be 
-        ``OUTPUTFILE = ./default_config.ini``
-        in current directory.
+- ``-h``, ``--help``  
+    show help message
+- ``-o OUTPUTFILE``, ``--outputfile OUTPUTFILE``: 
+    file name for 
+    default file. If not given, file name will be 
+    ``OUTPUTFILE = ./default_config.ini``
+    in current directory.
 
 Alias:
-    - ``templ``
+- ``templ``
 
 
 ### eida availability
@@ -113,27 +112,26 @@ Alias:
 Run availability test.
 
 Usage:
-
 ```
     eida availability [-h] [-i] configfile
 ```
 
 Required arguments:
-    - ``configfile``            
-        Configuration file with parameter settings. Use 
-        ``eida templ`` to create default template.
+- ``configfile``            
+    Configuration file with parameter settings. Use 
+    ``eida templ`` to create default template.
 
 Optional arguments:
-    - ``-h``, ``--help``  
-        show help message
-    - ``-i``, ``--ignore_missing``  
-        If set missing networks will be ignored, when inventory 
-        is requested from server. Use when run for the first time 
-        and no cached inventory ('outdir/chanlist_cache.pickle')
-        is available.
+- ``-h``, ``--help``  
+    show help message
+- ``-i``, ``--ignore_missing``  
+    If set missing networks will be ignored, when inventory 
+    is requested from server. Use when run for the first time 
+    and no cached inventory ('outdir/chanlist_cache.pickle')
+    is available.
 
 Alias:
-    - ``avail``
+- ``avail``
 
 
 ### eida inventory
@@ -141,26 +139,27 @@ Alias:
 Run inventory test.
 
 Usage:
-
 ```
     eida inventory [-h] {network,station,channel} configfile
 ```
 
 Required arguments:
-    - ``{network,station,channel}``
-        Level of detail for the requested inventories. 
-        ``network`` provides the least information (and puts the 
-        least amount of load on the servers).
-    - ``configfile``            
-        Configuration file with parameter settings. 
-        Use ``eida templ`` to create default template.
+- ``{network,station,channel}``
+    Level of detail for the requested inventories. 
+    ``network`` provides the least information (and puts the 
+    least amount of load on the servers).
+- ``configfile``            
+    Configuration file with parameter settings. 
+    Use ``eida templ`` to create default template.
 
 Optional arguments:
-  -h, --help            show this help message and exit
+  
+- `-h`, `--help`
+    show this help message and exit
 
 
 Alias:
-    - ``inv``
+- ``inv``
 
 
 ### eida report
@@ -169,20 +168,20 @@ Create html and pdf report.
 
 Usage:
 ```
-    eida report [-h] configfile
+eida report [-h] configfile
 ```
 
 Required arguments:
-    - ``configfile``            
-        Configuration file with parameter settings. 
-        Use ``eida templ`` to create default template.
+- ``configfile``            
+    Configuration file with parameter settings. 
+    Use ``eida templ`` to create default template.
 
 Optional arguments:
-    - ``-h``, ``--help``  
-        show help message
+- ``-h``, ``--help``  
+    show help message
 
 Alias:
-    - ``rep``
+- ``rep``
 
 
 

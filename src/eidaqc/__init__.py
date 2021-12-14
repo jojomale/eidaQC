@@ -231,8 +231,8 @@ Required arguments:
         Use ``eida templ`` to create default template.
 
 Optional arguments:
-  -h, --help            show this help message and exit
-
+    - ``-h``, ``--help``
+        show this help message and exit
 
 Alias:
     - ``inv``

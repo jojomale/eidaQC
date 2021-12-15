@@ -681,7 +681,7 @@ class AvailabilityReport(BaseReport):
         
         self.makehitplot(outfile=figfilenames[1]) # self.reqstat, figfile2 
         begtime = max( self.minreqtime, self.stime )
-        begtimestr = begtime.strftime( "%d-%b-%Y" )
+        begtimestr = begtime.strftime( "%d-%m-%Y" )
        
         self.repprint( "# EIDA Availability Report\n" )
         self.repprint( "## Created at %s\n" % self.etimestr.replace('_',' ') )
@@ -696,7 +696,7 @@ class AvailabilityReport(BaseReport):
         self.repprint( "Statistics on random requests between %s and %s" % (
             begtimestr,self.etimestr.replace('_',' ')) )
         self.repprint( "using station metadata valid since %s.\n" % 
-            (datetime.datetime.now()-datetime.timedelta(days=365)).strftime("%d-%b-%Y") )
+            (datetime.datetime.now()-datetime.timedelta(days=365)).strftime("%d-%m-%Y") )
         totstations, doublesta = self.total_number_of_stations()
         self.repprint( "\n**Counters:**\n" )
         self.repprint( "- unrestricted stations offering channels `%s`: %d"
@@ -794,7 +794,7 @@ class InventoryReport(BaseReport):
             + "whether all servers respond to the direct requests\n" \
             + "and whether all servers contribute to the routed\n" \
             + "request. The following results refer to tests carried\n" \
-            + "out since %s.\n\n" % self.stime.strftime("%d-%b-%Y %T")
+            + "out since %s.\n\n" % self.stime.strftime("%d-%m-%Y %T")
         return invtest_text
 
     
@@ -868,8 +868,14 @@ class InventoryReport(BaseReport):
                 for line in file.readlines():
                     if line.startswith('eida_inventory_test.py started at'):
                         timestr = line.split()[3]
-                        currtime = datetime.datetime.strptime( timestr, 
+                        try:
+                            currtime = datetime.datetime.strptime( timestr, 
                                             statuscodes.TIMEFMT+':%S' )
+                        except ValueError:
+                            # Provide backward support for old result files
+                            # with differnt timestring format.
+                            currtime = datetime.datetime.strptime( timestr, 
+                                            "%d-%b-%Y_%H:%M:%S")
                         if self.stime is not None and currtime < self.stime:
                             skip = True
                             continue
@@ -905,7 +911,7 @@ class InventoryReport(BaseReport):
                         routeactive = True
                         missnet = line.split()[3]
                     elif line.startswith('============'):
-                        timestr = currtime.strftime( "%d-%b-%Y_%T" )
+                        timestr = currtime.strftime( "%d-%m-%Y_%T" )
                         tmissnet = self.transref(missnet)
                         if not failedlist and not missnet:
                             self.noerrorcnt += 1
@@ -986,6 +992,9 @@ class InventoryReport(BaseReport):
 
 
     def parse_time(self, timestr ):
+        """
+        Convert timestring into datetime object
+        """
         try:
             stime = datetime.datetime.strptime( timestr, statuscodes.TIMEFMT )
         except:
@@ -998,7 +1007,7 @@ class InventoryReport(BaseReport):
                 stime = None
         if stime is None:
             try:
-                stime = datetime.datetime.strptime( timestr, "%d-%b-%Y" )
+                stime = datetime.datetime.strptime( timestr, "%d-%m-%Y" )
             except:
                 stime = None
         return stime
@@ -1104,7 +1113,7 @@ class MetaResponsePlot:
         xlabs = []
         while xtickpos < datetime.datetime.now():
             xticks.append( self.time_label(xtickpos)+1. )
-            xlabs.append( xtickpos.strftime("%d-%b") )
+            xlabs.append( xtickpos.strftime("%d-%m") )
             xtickpos += datetime.timedelta( days=4 )
         ax.set_title( "responsitivity to metadata requests (%d)"
             % self.stime.year )

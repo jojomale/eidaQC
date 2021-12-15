@@ -288,7 +288,7 @@ def run(reqlevel, configfile):
     ei = EidaInventory(reqlevel, 
              **config.get_invtest_dict())
     ei.lt.write( "\neida_inventory_test.py started at %s MEST, level %s (obspy %s) timeout %d (timeout bugfix, no restricted)"
-        % (datetime.datetime.now().strftime("%d-%b-%Y_%T"),
+        % (datetime.datetime.now().strftime("%d-%m-%Y_%T"),
         reqlevel, _get_version_string(), 
         config.invtest['timeout']) )
     ei.server_request()

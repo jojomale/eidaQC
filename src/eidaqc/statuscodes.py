@@ -2,7 +2,7 @@
 Definitions of status codes for EIDA network
 """
 
-TIMEFMT = "%d-%b-%Y_%H:%M"
+TIMEFMT = "%d-%m-%Y_%H:%M"
 
 
 # Status codes

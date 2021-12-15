@@ -755,7 +755,7 @@ class DoubleProcessCheck:
             os.remove( self.pidfile )
             return False
         try:
-            #timestr = datetime.datetime.now().strftime("%d-%b-%Y_%T")
+            #timestr = datetime.datetime.now().strftime("%d-%m-%Y_%T")
             self.logger.info( "killing process %d" % (pid) )
             os.kill( pid, signal.SIGTERM )
             time.sleep( 5 )

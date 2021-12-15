@@ -89,6 +89,25 @@ module_logger.setLevel(logging.DEBUG)
 # print("MLOGGERNAME", module_logger.name)
 
 
+
+def merge_missing_inventory_entries( oldinv, newinv ):
+    """
+    Merges networks missing in newinv from oldinv.
+    """
+    oldnetworks = oldinv.get_contents()['networks']
+    newnetworks = newinv.get_contents()['networks']
+    missing = []
+    for oldnet in oldnetworks:
+        if oldnet not in newnetworks:
+            missing.append( oldnet )
+    for missnet in missing:
+        for net in oldinv.networks:
+            if net.code == missnet:
+                newinv.networks.append( net )
+
+
+
+
 #-------------------------------------------------------------------------------
 class EidaAvailability:
     """
@@ -183,13 +202,15 @@ class EidaAvailability:
         and channel names). The inventory is stored as ``chanlist_cache.pickle``
         in the output directory. This cached inventory is used until it is
         older than `maxcacheage` seconds. Then a new inventory is requested
-        from servive.
+        from service.
         Ideally, all servers contributing to EIDA
         respond and a full inventory of all networks in EIDA is obtained.
         This is approximately tested by checking if all reference networks
-        are present. Moreover a minimum number of ``eia_min_num_networks``
+        are present. If this is not the case, we try to add the missing networks
+        from the old inventory, provided there is one.
+        Moreover a minimum number of ``eia_min_num_networks``
         should be present.
-        If this is not the case, we reuse the old inventory for now, but
+        If the previous checks fail, we reuse the old inventory for now, but
         try to update the inventory from service every 
         ``inv_update_waittime`` seconds. 
         Please choose ``inv_update_waittime`` and ``maxcacheage`` carefully
@@ -322,18 +343,40 @@ class EidaAvailability:
         except:
             self.logger.exception( "update of inventory failed, routing service failed" )
             return None
-        if self.number_of_networks(slist) < self.eia_min_num_networks:
-            self.logger.warning( "update of inventory failed, number of networks %d"
-                % self.number_of_networks(slist) )
-            return None
-        elif self._servers_missing(slist):
+
+        if self._servers_missing(slist):
+            #print(self._servers_missing(slist))
+            self.logger.warning("servers %s missing in new inventory," % 
+                    ','.join(self._servers_missing(slist)))
             if self.ignore_missing:
                 self.logger.warning( "Ignoring missing servers %s " %
                         ','.join(self._servers_missing(slist)) )
             else:
-                self.logger.warning( "update of inventory failed, servers missing %s"
-                    % ','.join(self._servers_missing(slist)) )
-                return None
+                # If we have an old inventory in cache try to add missing
+                # servers from there. This may also load old, inactive networks!
+                self.logger.warning(
+                    "trying to include missing servers from cached data")
+                slist_old = self._get_inventory_from_cache(overrideage=True)
+                if slist_old:
+                    merge_missing_inventory_entries(slist_old, slist)
+                    if self._servers_missing(slist):
+                        self.logger.warning( 
+                            "servers %s still missing, Using cached inventory"
+                            % ','.join(self._servers_missing(slist)) )
+                        slist = slist_old
+                    else:
+                        self.logger.warning( "update of inventory succeeded partially, " +
+                            "missing servers %s were added from previous inventory."
+                            % ','.join(self._servers_missing(slist)) )
+                    # print(slist.get_contents()['networks'])
+                else:
+                    self.logger.warning("No cached inventory found.")
+
+        elif self.number_of_networks(slist) < self.eia_min_num_networks:
+            self.logger.warning( "update of inventory failed, number of networks %d"
+                % self.number_of_networks(slist) )
+            return None
+
         fp = open( self.slist_cache, 'wb' )
         pickle.dump( slist, fp )
         fp.close()

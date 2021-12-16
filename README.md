@@ -1,5 +1,4 @@
-*This project is in still in development. It is usable but not*
-*all errors are handled properly*
+*This project is new and maybe not everything works* *smoothly yet.*
 
 
 Run tests on the 
@@ -75,7 +74,7 @@ Alternatively can also use pipenv:
 The main functionalities of the eidaqc-package are 
 available as command line tools. The commands work similar to svn or git commands.
 The options for ``<args>`` and ``<configfile>`` depend 
-on the subcommand.
+on the [subcommand](https://eidaqc.readthedocs.io/en/latest/eidaqc.html#usage).
 
 
 

@@ -1,19 +1,12 @@
 #! /usr/bin/env python
 #
-# file EidaAvailability.py
+# file eida_availability.py
 #      ===================
 #
 # K. Stammler, 17-Jun-2020
 # J. Lehr, 13-Oct-2021
 #
-# For creation of reports, needs 'pandoc' and 'convert' (imagemagick).
-# This also requires implementation specific code, see variables eia_spec_...
-#
-# Create report with:
-# import EidaAvailability
-# ar = EidaAvailability.AvailabilityReport()
-# ar.make_md_report( 'avreport.md' )
-# pdfreport = ar.make_pdf_report( 'avreport.md' )
+# 
 
 """
 Test availability of data on random station in 
@@ -25,13 +18,19 @@ from command line using:
 
 .. code-block:: console
 
-    eida avail [ignore-missing] <configfile>
+    eida avail [--ignore_missing] <configfile>
 
 
-The optional ``ignore-missing`` flag can be used to force the creation
+The optional ``--ignore_missing`` flag can be used to force the creation
 of a station inventory despite missing reference networks. This may be
 useful when no cached inventory is available, e.g. when running for the 
 first time.
+
+Alternatively, you can try to create a more complete inventory
+using the script ``scripts/create_inventory.py`` on GitHub.
+It tries to add missing networks by executing direct FDSN requests
+to the respective servers.
+
 
 The test consists of:
 
@@ -57,8 +56,10 @@ using ``get_stations()`` and ``get_waveforms()``, respectively.
 
 Notes
 ----------
-The code does not use the waveform catalog, therefore empty waveform returns
-are due to data gaps or due to problems in data access and delivery.
+The code does not use the waveform catalog, therefore 
+empty waveform returns
+are due to data gaps or due to problems in data access 
+and delivery.
 
 An inventory of available EIDA stations is created regularly.
 """

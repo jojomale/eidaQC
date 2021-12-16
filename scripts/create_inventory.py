@@ -1,3 +1,22 @@
+#! /usr/bin/env python
+#
+# file create_inventory.py
+#      ===================
+#
+# J. Lehr, 16-Dec-2021
+#
+
+"""
+Script to create an (initial) station inventory for use
+by eida_availability. 
+First, we try to create an inventory via the 
+Eida-Routing service (as done by the availability test).
+Subsequently, we try to update missing reference networks
+by direct request to the respective servers via FDSN-Client.
+However, these requests can also fail. So this script *can*
+but *does not have to* provide a more complete inventory than
+running just the routing request.
+"""
 # %%
 import logging, pickle, os, sys
 from obspy.clients.fdsn.client import Client, FDSNException
